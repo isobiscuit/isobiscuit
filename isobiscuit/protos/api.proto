@@ -1,0 +1,66 @@
+syntax = "proto3";
+package proto_out;
+
+service ManagerService {
+  rpc RegisterBiscuit(RegisterBiscuitRequest)
+     returns (RegisterBiscuitResponse);
+  rpc BiscuitInfo(BiscuitInfoRequest)
+     returns (BiscuitInfoResponse);
+  rpc BiscuitList(Empty)
+     returns (BiscuitListResponse);
+}
+
+
+
+
+
+
+
+message BiscuitListResponse {
+  repeated BiscuitInfoResponse biscuits = 1;
+}
+
+
+
+
+message BiscuitInfoRequest {
+  string biscuit_id = 1;
+}
+message BiscuitInfoResponse {
+  string path = 1;
+  string workdir = 2;
+  BiscuitState state = 3;
+  // ...
+}
+
+
+
+
+message RegisterBiscuitResponse {
+  string biscuit_id = 1;
+  string biscuit_token = 2;
+}
+message RegisterBiscuitRequest {
+  string biscuit_name       = 1;
+  string biscuit_path       = 2;
+}
+
+
+enum BiscuitState {
+  BISCUIT_STATE_UNSPECIFIED = 0;
+  BISCUIT_STATE_IDLE = 1;
+  BISCUIT_STATE_RUNNING = 2;
+  BISCUIT_STATE_WAITING = 3;
+  BISCUIT_STATE_READY = 4;
+  BISCUIT_STATE_TERMINATED = 5;
+  BISCUIT_STATE_ZOMBIE = 6;
+  BISCUIT_STATE_SUSPENDED = 7;
+}
+
+
+
+
+
+message Empty {
+
+}

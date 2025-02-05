@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "isobiscuit"
+version = "0.1.1"
+description = "IsoBiscuit is a tool for virtualize an isolate processes"
+authors = ["trollmii <trollmii@outlook.de>"]
+readme = "README.md"
+license = "LICENSE.txt"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+grpcio = "1.67.0"
+grpcio-tools = "1.67.0"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
