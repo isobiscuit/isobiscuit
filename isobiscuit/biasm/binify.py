@@ -1,5 +1,5 @@
 import time
-from codes import MODES, OPCODES, REGISTERS, get_address
+from .codes import MODES, OPCODES, REGISTERS, get_address
 
 
 
@@ -34,7 +34,6 @@ def parse(files: list[str]):
             else:
                 code+=line+"\n"
     code = code[:-1]
-    print(code)
     cmds=[]
     for line in code.split("\n"):
         
@@ -109,7 +108,6 @@ def parse(files: list[str]):
 
         elif line[0].endswith(":"):
             cmds.append(["PROC", line[0][:-1]])
-    print(cmds)
     return cmds
 
 
@@ -141,12 +139,14 @@ def binify(files: list[str]):
                 l2.append(int(i, 16))
             l2.append(0x02)
             data[counter] = l2
+            codes[counter] = [0x03, 0x00]
         elif str(cmd[0]).startswith("0x"):
-            data[counter] = cmd[0]
+            data[counter] = int(cmd[0], 16)
+            codes[counter] = [0x03, 0x00]
     
         if cmd[0] == "mov":
 
-            codes[counter] = [OPCODES["mov"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
+            codes[counter] = [OPCODES["mov"], REGISTERS[cmd[1]], REGISTERS[cmd[2]], 0x00]
 
 
         if cmd[0] == "int":
@@ -224,10 +224,6 @@ def binify(files: list[str]):
 
 
 
-    return (codes, data)    
+    return (codes, data, counter)    
 
 
-import json
-codes = binify(["./isobiscuit/test.biasm"])
-j = json.dumps(codes, indent=4)
-print(j)

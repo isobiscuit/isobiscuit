@@ -3,11 +3,12 @@
 |   Hex Code    |   Name            |   Description                         |
 |---------------|-------------------|-------------------------------|
 |0x00|end op|End the operation and go to the next op|
+|0x00|nothing (data sector!)|this does nothing
 |0x01|start ascii mode|In other programming languages the "|
 |0x02|end ascii mode|This will be end the ascii mode|
-|0x03|reserved
-|0x04|reserved
-|0x05|reserved
+|0x03|no op|no operation, used if the procedure has an int, which is in the data sector|
+|0x04|integer (4bytes)|use this in the data sector as prefix for a 4 bytes long int
+|0x05|integer (8bytes)|use this in the data sector as prefix for a 8 bytes long int
 |0x06|reserved
 |0x07|reserved
 |0x08|reserved

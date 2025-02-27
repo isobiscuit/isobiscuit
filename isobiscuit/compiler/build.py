@@ -2,6 +2,7 @@ import binascii
 import zipfile
 import os
 import io
+from ..biasm import compile as compileBiASM
 
 
 def createBiscuitFile(biscuit_file):
@@ -45,6 +46,7 @@ def writeSectors(biscuit_file, data_sector, code_sector, memory_sector, other_se
 
 
 
+
 def addFilesToBiscuit(biscuit_file, files: list[str]):
     zip_buf = io.BytesIO()
     with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zipf:
@@ -64,3 +66,8 @@ def writeBiscuit(biscuit_file, data_sector, code_sector, memory_sector, other_se
     createBiscuitFile(biscuit_file)
     writeSectors(biscuit_file, data_sector, code_sector, memory_sector, other_sector)
     addFilesToBiscuit(biscuit_file, files)
+
+
+def build(out_file, biasm_files: list[str], fs_files: list[str]):
+    (code, data) = compileBiASM(biasm_files)
+    writeBiscuit(out_file, data, code, None, None, fs_files)
