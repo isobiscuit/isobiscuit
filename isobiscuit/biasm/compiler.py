@@ -24,7 +24,7 @@ def to_binary_array(d: dict[str, int|list], counter):
         else:
             b.append(0)
         
-    return bytes(bytearray(b))
+    return str(bytes(bytearray(b)).hex())
             
     
 
@@ -32,7 +32,6 @@ def to_binary_array(d: dict[str, int|list], counter):
 
 def compile(files: list[str]):
     code = binify(files)
-    data = to_binary_array(code[1], code[2]).hex(" ")
-    code = to_binary_array(code[0], code[2]).hex(" ")   
+    data = to_binary_array(code[1], code[2])
+    code = to_binary_array(code[0], code[2])   
     return (code, data)
- 

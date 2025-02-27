@@ -1,6 +1,6 @@
 import os
 import yaml
-from .compiler import writeBiscuit
+from .compiler import build
 
 
 
@@ -68,7 +68,9 @@ def build_biscuit(project_name, path="."):
         f"{path}/{project_name}/biscuit.yaml"
         
     ]
+    biasm_files: list[str] = [
 
+    ]
 
     files_fs = os.listdir(f"{path}/{project_name}/fs")
     for file in files_fs:
@@ -88,12 +90,9 @@ def build_biscuit(project_name, path="."):
     
 
 
-    writeBiscuit(
+    build(
         f"{path}/{project_name}",
-        data_sector,
-        code_sector,
-        memory_sector,
-        other_sector,
+        biasm_files,
         files,
     )
 

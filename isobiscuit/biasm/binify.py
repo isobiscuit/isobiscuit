@@ -1,6 +1,6 @@
 import time
 from .codes import MODES, OPCODES, REGISTERS, get_address
-
+import glob
 
 
 add_later_ops = [
@@ -16,9 +16,10 @@ add_later_ops = [
 
 def parse(files: list[str]):
     code = ""
-    for file in files:
-        with open(file, "r") as f:
-            code += f.read() + "\n"
+    for _ in files:
+        for file in glob.glob(_):
+            with open(file, "r") as f:
+                code += f.read() + "\n"
     code = code.replace("\t", " ")
     code = code.replace("  ", " ")
     code = code.replace("   ", " ")

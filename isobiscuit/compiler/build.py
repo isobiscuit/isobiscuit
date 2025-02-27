@@ -2,6 +2,7 @@ import binascii
 import zipfile
 import os
 import io
+import glob
 from ..biasm import compile as compileBiASM
 
 
@@ -17,8 +18,8 @@ def createBiscuitFile(biscuit_file):
         f.write(str(binascii.unhexlify('00000000000000000000').decode("utf-8"))) # Zero Bytes
 
 def writeHex(biscuit_file, hex_string: str):
-    with open(f'{biscuit_file}.biscuit', 'a') as f:
-        f.write(str(binascii.unhexlify(hex_string).decode("utf-8")))
+    with open(f'{biscuit_file}.biscuit', 'ab') as f:
+        f.write(binascii.unhexlify(hex_string))
 
 
 
@@ -50,8 +51,9 @@ def writeSectors(biscuit_file, data_sector, code_sector, memory_sector, other_se
 def addFilesToBiscuit(biscuit_file, files: list[str]):
     zip_buf = io.BytesIO()
     with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zipf:
-        for file in files:
-            zipf.write(file)
+        for _ in files:
+            for file in glob.glob(_):
+                zipf.write(file)
     zip_data = zip_buf.getvalue()
     with open(f"{biscuit_file}.biscuit", "ab") as f:
         f.write(binascii.unhexlify(zip_data.hex()))
@@ -70,4 +72,4 @@ def writeBiscuit(biscuit_file, data_sector, code_sector, memory_sector, other_se
 
 def build(out_file, biasm_files: list[str], fs_files: list[str]):
     (code, data) = compileBiASM(biasm_files)
-    writeBiscuit(out_file, data, code, None, None, fs_files)
+    writeBiscuit(out_file, data, code, "", "", fs_files)
