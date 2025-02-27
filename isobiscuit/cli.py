@@ -1,7 +1,7 @@
 import os
 import yaml
 from .compiler import build
-
+from .runner import run
 
 
 
@@ -100,3 +100,18 @@ def build_biscuit(project_name, path="."):
     pass
 
 
+def run_biscuit(biscuit, path="."):
+    biscuit = biscuit+".biscuit"
+    run(biscuit)
+
+
+def main():
+    import sys
+    action = sys.argv[1]
+    if action == "init":
+        init_biscuit(sys.argv[2])
+    if action == "build":
+        build_biscuit(sys.argv[2])
+    if action == "run":
+        run_biscuit(sys.argv[2])
+        
