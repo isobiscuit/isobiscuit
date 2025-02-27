@@ -1,8 +1,11 @@
+
+
+
 import os
 import yaml
 from .compiler import build
 from .runner import run
-
+import sys
 
 
 
@@ -106,7 +109,7 @@ def run_biscuit(biscuit, path="."):
 
 
 def main():
-    import sys
+    
     action = sys.argv[1]
     if action == "init":
         init_biscuit(sys.argv[2])
@@ -114,4 +117,3 @@ def main():
         build_biscuit(sys.argv[2])
     if action == "run":
         run_biscuit(sys.argv[2])
-        
