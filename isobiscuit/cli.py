@@ -6,6 +6,7 @@ import yaml
 from .compiler import build
 from .runner import run
 import sys
+import glob
 
 
 
@@ -72,8 +73,11 @@ def build_biscuit(project_name, path="."):
         
     ]
     biasm_files: list[str] = [
-
+        f"{path}/{project_name}/code/**/*.biasm",
+        f"{path}/{project_name}/code/*.biasm",
+        
     ]
+
 
     files_fs = os.listdir(f"{path}/{project_name}/fs")
     for file in files_fs:
