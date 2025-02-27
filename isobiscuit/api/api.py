@@ -1,7 +1,6 @@
 import grpc
 from concurrent import futures
-import api_pb2
-import api_pb2_grpc
+from . import api_pb2, api_pb2_grpc
 
 """Client for IsoBiscuit Daemon"""
 class Client:

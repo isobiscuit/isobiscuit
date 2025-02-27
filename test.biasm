@@ -1,0 +1,30 @@
+
+
+mode biscuit
+
+
+
+_start:
+    load eax 4
+    load ebx 1
+    load ecx hello_world
+    int 0x45
+
+    mode linux
+
+    load eax 0
+    load ebx 0
+    int 0x80
+
+0:
+0x00
+
+1:
+0x1
+
+
+4:
+0x4
+
+hello_world:
+'68,65,6C,6C,6F,20,77,6F,72,6C,64'h

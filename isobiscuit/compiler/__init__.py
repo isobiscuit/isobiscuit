@@ -1,1 +1,1 @@
-from build import writeBiscuit
+from .build import writeBiscuit

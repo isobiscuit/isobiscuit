@@ -1,6 +1,6 @@
 import os
 import yaml
-from compiler import writeBiscuit
+from .compiler import writeBiscuit
 
 
 
