@@ -93,7 +93,7 @@ def build_biscuit(project_name, path="."):
     
 
 
-    build(
+    build.build(
         f"{path}/{project_name}",
         biasm_files,
         files,
