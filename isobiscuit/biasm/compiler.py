@@ -42,4 +42,3 @@ def compile(files: list[str]):
     code = to_binary_array(code[0], code[2])   
     return (code, data)
 
-print(compile(["test.biasm"]))
