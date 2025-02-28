@@ -140,46 +140,46 @@ def binify(files: list[str]):
                 l2.append(int(i, 16))
             l2.append(0x02)
             data[counter] = l2
-            codes[counter] = [0x03, 0x00]
+            codes[counter] = [0x03]
         elif str(cmd[0]).startswith("0x"):
             data[counter] = int(cmd[0], 16)
-            codes[counter] = [0x03, 0x00]
+            codes[counter] = [0x03]
     
         if cmd[0] == "mov":
 
-            codes[counter] = [OPCODES["mov"], REGISTERS[cmd[1]], REGISTERS[cmd[2]], 0x00]
+            codes[counter] = [OPCODES["mov"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
 
         if cmd[0] == "int":
-            codes[counter] = [OPCODES["int"], int(cmd[1], 16), 0x00]
+            codes[counter] = [OPCODES["int"], int(cmd[1], 16)]
 
 
         if cmd[0] == "mode":
-            codes[counter] = [OPCODES["mode"], MODES[cmd[1]], 0x00]
+            codes[counter] = [OPCODES["mode"], MODES[cmd[1]]]
 
 
         if cmd[0] == "add":
-            codes[counter] = [OPCODES["add"], REGISTERS[cmd[1]], REGISTERS[cmd[2]], 0x00]
+            codes[counter] = [OPCODES["add"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
 
         if cmd[0] == "sub":
-            codes[counter] = [OPCODES["sub"], REGISTERS[cmd[1]], REGISTERS[cmd[2]], 0x00]
+            codes[counter] = [OPCODES["sub"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
 
         if cmd[0] == "mul":
-            codes[counter] = [OPCODES["mul"], REGISTERS[cmd[1]], REGISTERS[cmd[2]], 0x00]
+            codes[counter] = [OPCODES["mul"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
 
         if cmd[0] == "div":
-            codes[counter] = [OPCODES["div"], REGISTERS[cmd[1]], REGISTERS[cmd[2]], 0x00]
+            codes[counter] = [OPCODES["div"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
 
         if cmd[0] == "mod":
-            codes[counter] = [OPCODES["mod"], REGISTERS[cmd[1]], REGISTERS[cmd[2]], 0x00]
+            codes[counter] = [OPCODES["mod"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
 
         if cmd[0] == "exp":
-            codes[counter] = [OPCODES["exp"], REGISTERS[cmd[1]], REGISTERS[cmd[2]], 0x00]
+            codes[counter] = [OPCODES["exp"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
 
         
@@ -197,31 +197,31 @@ def binify(files: list[str]):
         address = i[0]
         cmd = i[1]
         if cmd[0] == "load":
-            codes[address] = [OPCODES["load"], REGISTERS[cmd[1]], get_address(cmd[2], procs), 0x00]
+            codes[address] = [OPCODES["load"], REGISTERS[cmd[1]], get_address(cmd[2], procs)]
         if cmd[0] == "store":
-            codes[address] = [OPCODES["store"], REGISTERS[cmd[1]], get_address(cmd[2], procs), 0x00]
+            codes[address] = [OPCODES["store"], REGISTERS[cmd[1]], get_address(cmd[2], procs)]
 
         if cmd[0] == "jmp":
-            codes[address] = [OPCODES["jmp"], get_address(cmd[2], procs), 0x00]
+            codes[address] = [OPCODES["jmp"], get_address(cmd[2], procs)]
 
 
         if cmd[0] == "je":
-            codes[address] = [OPCODES["je"], get_address(cmd[2], procs), 0x00]
+            codes[address] = [OPCODES["je"], get_address(cmd[2], procs)]
 
 
 
         if cmd[0] == "jne":
-            codes[address] = [OPCODES["jne"], get_address(cmd[2], procs), 0x00]
+            codes[address] = [OPCODES["jne"], get_address(cmd[2], procs)]
 
 
 
         if cmd[0] == "jg":
-            codes[address] = [OPCODES["jg"], get_address(cmd[2], procs), 0x00]
+            codes[address] = [OPCODES["jg"], get_address(cmd[2], procs)]
 
 
 
         if cmd[0] == "jl":
-            codes[address] = [OPCODES["jl"], get_address(cmd[2], procs), 0x00]
+            codes[address] = [OPCODES["jl"], get_address(cmd[2], procs)]
 
 
 

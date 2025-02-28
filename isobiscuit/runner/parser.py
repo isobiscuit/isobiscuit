@@ -38,3 +38,57 @@ def parse_data_sector(data_sector_hex: str):
             raise ValueError(f"Unknown prefix: {hex(prefix)} at offset {offset}")
     return parsed_data
 
+
+
+# Updated opcodes
+opcodes = {
+    "wa": [0x40, 0x41, 0x43, 0x44, 0x45, 0x46, 0x47],  # With Address Argument
+    "al1": [0x2d, 0x43, 0x44, 0x45, 0x46, 0x47, 0x49, 0x4a],  # Argument Length 1
+    "al2": [0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x2a, 0x2b, 0x2c, 0x2e, 0x2f, 0x40, 0x41, 0x42, 0x48]  # Argument Length 2
+}
+
+def parse_code_sector(code_sector_hex: str):
+    code = binascii.unhexlify(code_sector_hex)
+    offset = 0
+    parsed_code = {}
+    address = 0
+
+    while offset < len(code):
+        prefix = code[offset]
+        offset += 1
+        
+        if prefix == 0x03:  # Special case for 0x03 prefix (no op)
+            address += 1
+        elif prefix in opcodes["al1"]:  # Argument Length 1
+            if prefix in opcodes["wa"]:  # With Address Argument
+                # Handle 4-byte address for 32-bit opcodes (e.g., LOAD, STORE)
+                parsed_code[address] = [format(prefix, '02x'), struct.unpack(">I", code[offset:offset+4])[0]]
+                offset += 4
+                address += 1
+            else:
+                parsed_code[address] = [format(prefix, '02x'), code[offset]]
+                offset += 1
+                address += 1
+        elif prefix in opcodes["al2"]:  # Argument Length 2
+            arg1 = code[offset]
+            offset += 1
+            if prefix in opcodes["wa"]:  # With Address Argument (could be 32 or 64-bit)
+                # Check if the instruction is one that uses 8-byte address (like JMP)
+                if prefix in [0x43, 0x44, 0x45, 0x46, 0x47]:  # These opcodes are jump-like
+                    # Handle 8-byte address for 64-bit opcodes
+                    arg2 = struct.unpack(">Q", code[offset:offset+8])[0]  # Unpack as 8-byte (64-bit)
+                    offset += 8
+                else:
+                    # Handle 4-byte address for 32-bit opcodes
+                    arg2 = struct.unpack(">I", code[offset:offset+4])[0]  # Unpack as 4-byte (32-bit)
+                    offset += 4
+            else:  # Regular AL2 opcode
+                arg2 = code[offset]
+                offset += 1
+                
+            parsed_code[address] = [format(prefix, '02x'), arg2, arg1]
+            address += 1
+        else:
+            raise ValueError(f"Unknown opcode: {hex(prefix)} at offset {offset}")
+
+    return parsed_code

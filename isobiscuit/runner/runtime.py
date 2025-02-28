@@ -1,7 +1,7 @@
 import binascii
 import io
 import zipfile
-from .parser import parse_data_sector
+from .parser import parse_data_sector, parse_code_sector
 
 def hex_to_zipfile(zip):
     zip_bytes = binascii.unhexlify(zip)
@@ -14,7 +14,7 @@ def mount_zip_vfs(hex_string):
         
 def parse_biscuit(data_sector, code_sector, mem_sector, other_sector):
     data_sector = parse_data_sector(data_sector)
-
+    code_sector = parse_code_sector(code_sector)
     return (data_sector, code_sector, mem_sector, other_sector)
 
 def start_biscuit(data_sector, code_sector, mem_sector, other_sector, zip):

@@ -4,7 +4,6 @@
 ## Language
 |   Hex Code    |   Name            |   Description                         |
 |---------------|-------------------|-------------------------------|
-|0x00|end op|End the operation and go to the next op|
 |0x00|nothing (data sector!)|this does nothing
 |0x01|start ascii mode|In other programming languages the "|
 |0x02|end ascii mode|This will be end the ascii mode|
