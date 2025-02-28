@@ -78,10 +78,10 @@ MODES = {
 
 def get_address(s: str, procs: dict):
     if s.startswith("0x"):
-        return int(s, 16)
+        return '{:08x}'.format(int(s[2:], 16))
     if s.endswith("h"):
-        return int(s[:-1], 16)
+        return '{:08x}'.format(int(s[:-1], 16))
     
-    return procs[s]
+    return '{:08x}'.format(procs[s])
     
     

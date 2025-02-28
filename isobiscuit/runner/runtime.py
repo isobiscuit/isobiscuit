@@ -1,7 +1,7 @@
 import binascii
 import io
 import zipfile
-
+from .parser import parse_data_sector
 
 def hex_to_zipfile(zip):
     zip_bytes = binascii.unhexlify(zip)
@@ -12,18 +12,18 @@ def mount_zip_vfs(hex_string):
     
     return zipfile.ZipFile(zip_file, "r")
         
+def parse_biscuit(data_sector, code_sector, mem_sector, other_sector):
+    data_sector = parse_data_sector(data_sector)
 
+    return (data_sector, code_sector, mem_sector, other_sector)
 
 def start_biscuit(data_sector, code_sector, mem_sector, other_sector, zip):
     #zip = mount_zip_vfs(zip)
-    print("RUNTIME IS IN DEVELOPING, here are the biscuit informations")
+    (data_sector, code_sector, mem_sector, other_sector) = parse_biscuit(data_sector, code_sector, mem_sector, other_sector)
+    print("RUNTIME IS IN DEVELOPING, HERE ARE THE BISCUIT INFORMATIONS")
     print("DATA_SECTOR")
     print(data_sector)
     print("CODE_SECTOR")
     print(code_sector)
-    print("MEM_SECTOR")
-    print(mem_sector)
-    print("OTHER_SECTOR")
-    print(other_sector)
-    print("VFS")
-    print(str(str(binascii.unhexlify(zip))[2:][:-1]).replace("\\x", ""))
+    print("VIRTUAL FILE SYSTEM")
+    print(zip)
