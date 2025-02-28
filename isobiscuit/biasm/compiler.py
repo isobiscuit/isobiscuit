@@ -2,31 +2,47 @@ from .binify import binify
 import struct
 import binascii
 
+def data_to_binary_array(d: dict[str, int|list], counter):
+    b = []
+    
+    for i in range(counter):
+        if isinstance(d.get(i), int):
+            bits = d[i].bit_length()
+            
+            bytes_required = (bits + 7) // 8
+            
+            if bytes_required <= 4:
+                b.append(0x04)
+                bits = 32
+            else:
+                b.append(0x05)
+                bits = 64
+            
+            b.extend(list(d[i].to_bytes(bits // 8, byteorder='big')))
+        
+        elif isinstance(d.get(i), list):
+            for elem in d[i]:
+                b.append(elem)
+    
+    return bytes(bytearray(b)).hex()
 
-
-def to_binary_array(d: dict[str, int|list|str], counter):
+def code_to_binary_array(d: dict[str, int|list|str], counter):
     b = []
     
     for i in range(0, counter):
         item = d.get(i)
-        if isinstance(item, int):
-            bits = item.bit_length()
-            bytes_required = (bits + 7) // 8
-            if bytes_required <= 4:
-                b.append("04")
-                bits = 32
-            else:
-                bits = 64
-                b.append("05")
-            b.extend(str(item.to_bytes(bits//8).hex()))
-        elif isinstance(item, list):
+        
+        if isinstance(item, list):
             for i2 in item:
+                
                 if isinstance(i2, int):
-                    b.append(str(i2))
+                    _ = str(hex(i2)[2:].zfill(2))
+                    b.append(_)
                 elif isinstance(i2, str):
-                    b.append(i2)
+                    _ = i2.zfill(8)
+                    b.append(_)
         else:
-            b.append(str("00"))
+            b.append("00")
         
     return "".join(b)
             
@@ -35,8 +51,6 @@ def to_binary_array(d: dict[str, int|list|str], counter):
 
 def compile(files: list[str]):
     code = binify(files)
-    data = to_binary_array(code[1], code[2])
-    code = to_binary_array(code[0], code[2])   
+    data = data_to_binary_array(code[1], code[2])
+    code = code_to_binary_array(code[0], code[2])   
     return (code, data)
-
-print(compile(["test.biasm"]))
