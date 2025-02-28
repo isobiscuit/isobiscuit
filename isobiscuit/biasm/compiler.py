@@ -23,7 +23,8 @@ def data_to_binary_array(d: dict[str, int|list], counter):
         elif isinstance(d.get(i), list):
             for elem in d[i]:
                 b.append(elem)
-    
+        else:
+            b.append(0x00)
     return bytes(bytearray(b)).hex()
 
 def code_to_binary_array(d: dict[str, int|list|str], counter):
