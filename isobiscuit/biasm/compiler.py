@@ -1,6 +1,6 @@
 from .binify import binify
 import struct
-
+import binascii
 
 
 
@@ -13,26 +13,23 @@ def to_binary_array(d: dict[str, int|list|str], counter):
             bits = item.bit_length()
             bytes_required = (bits + 7) // 8
             if bytes_required <= 4:
-                b.append(0x04)
+                b.append("04")
                 bits = 32
             else:
                 bits = 64
-                b.append(0x05)
-            b.extend(list(item.to_bytes(bits//8)))
+                b.append("05")
+            b.extend(str(item.to_bytes(bits//8).hex()))
         elif isinstance(item, list):
             for i2 in item:
                 if isinstance(i2, int):
-                    b.append(i2)
+                    b.append(str(i2))
                 elif isinstance(i2, str):
-                    for i3 in range(0, len(i2)):
-                        i4 = i2[i3:i3+2]
-                        b.append(int(i4, 16))
+                    b.append(i2)
         else:
-            b.append(0)
+            b.append(str("00"))
         
-    return str(bytes(bytearray(b)).hex())
+    return "".join(b)
             
-    
 
 
 
@@ -42,3 +39,4 @@ def compile(files: list[str]):
     code = to_binary_array(code[0], code[2])   
     return (code, data)
 
+print(compile(["test.biasm"]))
