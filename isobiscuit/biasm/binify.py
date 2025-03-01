@@ -14,7 +14,7 @@ add_later_ops = [
 ]
 
 
-def parse(files: list[str]):
+def parse(files: list[str], debug=False):
     code = ""
     for _ in files:
         for file in glob.glob(_):
@@ -35,11 +35,15 @@ def parse(files: list[str]):
             else:
                 code+=line+"\n"
     code = code[:-1]
+    if debug:
+        print(f"parse code: {code}")
     cmds=[]
     for line in code.split("\n"):
         
         line = line.split(" ")
-        if line[0] == "mov":
+        if line[0] == "org":
+            cmds.append([line[0], line[1]])
+        elif line[0] == "mov":
             cmds.append([line[0], line[1], line[2]])
         
         elif line[0] == "mode":
@@ -96,7 +100,19 @@ def parse(files: list[str]):
         
 
 
-
+        elif line[0] == "and":
+            cmds.append(["and", line[1], line[2]])
+        elif line[0] == "or":
+            cmds.append(["or", line[1], line[2]])
+        elif line[0] == "xor":
+            cmds.append(["xor", line[1], line[2]])
+        elif line[0] == "not":
+            cmds.append(["not", line[1]])
+        elif line[0] == "shl":
+            cmds.append(["shl", line[1], line[2]])
+        elif line[0] == "shr":
+            cmds.append(["shr", line[1], line[2]])
+        
 
 
 
@@ -109,6 +125,8 @@ def parse(files: list[str]):
 
         elif line[0].endswith(":"):
             cmds.append(["PROC", line[0][:-1]])
+    if debug:
+        print(f"Parsed cmds: {cmds}")
     return cmds
 
 
@@ -118,7 +136,7 @@ def parse(files: list[str]):
 
 
 def binify(files: list[str], debug=False):
-    cmds = parse(files)
+    cmds = parse(files, debug)
     #print(cmds)
     codes = {}
     data = {}    
@@ -128,6 +146,13 @@ def binify(files: list[str], debug=False):
     for cmd in cmds:
         if debug:
             print(cmd)
+        if cmd[0] == "org":
+            new =   int(cmd[1], 16) - counter
+            for i in range(0, new):
+                codes[counter] = [0x03]
+                counter+=1
+            continue
+
         if cmd[0] == "PROC":
             procs[cmd[1]] = counter
             continue
@@ -184,6 +209,20 @@ def binify(files: list[str], debug=False):
             codes[counter] = [OPCODES["exp"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
 
+        if cmd[0] == "and":
+            codes[counter] = [OPCODES["and"], REGISTERS[cmd[1]], REGISTERS[cmds[2]]]
+        if cmd[0] == "or":
+            codes[counter] = [OPCODES["or"], REGISTERS[cmd[1]], REGISTERS[cmds[2]]]
+        if cmd[0] == "xor":
+            codes[counter] = [OPCODES["xor"], REGISTERS[cmd[1]], REGISTERS[cmds[2]]]
+        
+        if cmd[0] == "not":
+            codes[counter] = [OPCODES["not"], REGISTERS[cmd[1]]]
+
+        if cmd[0] == "shl":
+            codes[counter] = [OPCODES["sh"], REGISTERS[cmd[1]], cmd[2]]
+        if cmd[0] == "shr":
+            codes[counter] = [OPCODES["sh"], REGISTERS[cmd[1]], cmd[2]]
         
 
         

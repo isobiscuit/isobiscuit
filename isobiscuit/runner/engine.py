@@ -6,8 +6,10 @@ import time
 class Engine:
     def __init__(self, data_sector: dict,
                   code_sector: dict[int, tuple[str|int]],
-                  mem_sector: dict
+                  mem_sector: dict,
+                  debug=False
                 ):
+        self.debug = debug
         self.stack = []
         self.register = {
             0x10: False,
@@ -77,7 +79,10 @@ class Engine:
     def run(self):
         try:
             while self.pc < self.code_len:
-                op = self.memory[self.code_addresses[self.pc]]
+                address = self.code_addresses[self.pc]
+                op = self.memory[address]
+                if self.debug:
+                    print(f"[Execute] [Address:{hex(address)}] {op}")
                 self.execute(op)
                 self.pc += 1
                 if self.pc >= self.code_len:
@@ -236,6 +241,13 @@ class Engine:
     
             if arg1 == 0x01:
                 print(arg2)
+        elif call == 0x05:
+            print(f"Memory: {self.memory}")
+            print(f"Stack: {self.stack}")
+            print(f"Flags: {self.flags}")
+            print(f"Program Counter: {self.pc}")
+            print(f"Mode: {self.mode}")
+            print(f"Code Sector Index: {self.code_addresses}")
             
 
 

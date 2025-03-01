@@ -17,11 +17,11 @@ def parse_biscuit(data_sector, code_sector, mem_sector, other_sector):
     code_sector = parse_code_sector(code_sector)
     return (data_sector, code_sector, mem_sector, other_sector)
 
-def start_biscuit(data_sector, code_sector, mem_sector, other_sector, zip):
+def start_biscuit(data_sector, code_sector, mem_sector, other_sector, zip, debug=False):
     #zip = mount_zip_vfs(zip)
     (data_sector, code_sector, mem_sector, other_sector) = parse_biscuit(data_sector, code_sector, mem_sector, other_sector)
     print("Starting engine...")
-    engine = Engine(data_sector, code_sector, {0: ""})
+    engine = Engine(data_sector, code_sector, {0: ""}, debug)
     print("Booting biscuit...")
     engine.run()
     

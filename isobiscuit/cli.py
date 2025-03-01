@@ -108,9 +108,9 @@ def build_biscuit(project_name, path=".", debug=False):
     pass
 
 
-def run_biscuit(biscuit, path="."):
+def run_biscuit(biscuit, path=".", debug=False):
     biscuit = biscuit+".biscuit"
-    run(biscuit)
+    run(biscuit, debug=debug)
 
 
 def main():
@@ -121,4 +121,4 @@ def main():
     if action == "build":
         build_biscuit(sys.argv[2], debug=debug)
     if action == "run":
-        run_biscuit(sys.argv[2])
+        run_biscuit(sys.argv[2], debug=debug)
