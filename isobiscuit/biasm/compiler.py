@@ -50,8 +50,8 @@ def code_to_binary_array(d: dict[str, int|list|str], counter):
 
 
 
-def compile(files: list[str]):
-    code = binify(files)
+def compile(files: list[str], debug=False):
+    code = binify(files, debug)
     data = data_to_binary_array(code[1], code[2])
     code = code_to_binary_array(code[0], code[2])   
     return (code, data)

@@ -63,7 +63,7 @@ def init_biscuit(name, path="."):
                 file.write(content)
 
 """Build Biscuit"""
-def build_biscuit(project_name, path="."):
+def build_biscuit(project_name, path=".", debug=False):
     data_sector = ""
     code_sector = ""
     memory_sector = ""
@@ -101,6 +101,7 @@ def build_biscuit(project_name, path="."):
         f"{path}/{project_name}",
         biasm_files,
         files,
+        debug
     )
 
 
@@ -113,11 +114,11 @@ def run_biscuit(biscuit, path="."):
 
 
 def main():
-    
+    debug = sys.argv[-1] == "-d"
     action = sys.argv[1]
     if action == "init":
         init_biscuit(sys.argv[2])
     if action == "build":
-        build_biscuit(sys.argv[2])
+        build_biscuit(sys.argv[2], debug=debug)
     if action == "run":
         run_biscuit(sys.argv[2])

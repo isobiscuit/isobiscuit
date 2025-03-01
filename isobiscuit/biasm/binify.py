@@ -49,7 +49,7 @@ def parse(files: list[str]):
         
 
         elif line[0] == "jmp":
-            cmds.append(["jmp"])
+            cmds.append(["jmp", line[1]])
         elif line[0] == "load":
             cmds.append(["load", line[1], line[2]])
         elif line[0] == "store":
@@ -117,7 +117,7 @@ def parse(files: list[str]):
 
 
 
-def binify(files: list[str]):
+def binify(files: list[str], debug=False):
     cmds = parse(files)
     #print(cmds)
     codes = {}
@@ -126,7 +126,8 @@ def binify(files: list[str]):
     add_later = []
     counter = 0x0
     for cmd in cmds:
-        
+        if debug:
+            print(cmd)
         if cmd[0] == "PROC":
             procs[cmd[1]] = counter
             continue
@@ -144,7 +145,8 @@ def binify(files: list[str]):
         elif str(cmd[0]).startswith("0x"):
             data[counter] = int(cmd[0], 16)
             codes[counter] = [0x03]
-    
+        if cmd[0] == "cmp":
+            codes[counter] = [OPCODES["cmp"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
         if cmd[0] == "mov":
 
             codes[counter] = [OPCODES["mov"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
@@ -202,26 +204,26 @@ def binify(files: list[str]):
             codes[address] = [OPCODES["store"], REGISTERS[cmd[1]], get_address(cmd[2], procs)]
 
         if cmd[0] == "jmp":
-            codes[address] = [OPCODES["jmp"], get_address(cmd[2], procs)]
+            codes[address] = [OPCODES["jmp"], get_address(cmd[1], procs)]
 
 
         if cmd[0] == "je":
-            codes[address] = [OPCODES["je"], get_address(cmd[2], procs)]
+            codes[address] = [OPCODES["je"], get_address(cmd[1], procs)]
 
 
 
         if cmd[0] == "jne":
-            codes[address] = [OPCODES["jne"], get_address(cmd[2], procs)]
+            codes[address] = [OPCODES["jne"], get_address(cmd[1], procs)]
 
 
 
         if cmd[0] == "jg":
-            codes[address] = [OPCODES["jg"], get_address(cmd[2], procs)]
+            codes[address] = [OPCODES["jg"], get_address(cmd[1], procs)]
 
 
 
         if cmd[0] == "jl":
-            codes[address] = [OPCODES["jl"], get_address(cmd[2], procs)]
+            codes[address] = [OPCODES["jl"], get_address(cmd[1], procs)]
 
 
 

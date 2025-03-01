@@ -158,8 +158,8 @@ class Engine:
             mem_addr = op[1]
             self.register[r1] = self.memory[mem_addr]
         elif opcode == '41':
-            r1 = op[1]
-            mem_addr = op[2]
+            r1 = op[2]
+            mem_addr = op[1]
             self.memory[mem_addr] = self.register[r1]
         elif opcode == '42':
             r1 = op[1]
@@ -355,7 +355,15 @@ class Engine:
 
 
     def cmp(self, r1, r2):
-        result = self.register[r1] - self.register[r2]
+        val1 = self.register[r1]
+        val2 = self.register[r2]
+        if isinstance(val1, str) or isinstance(val2, str):
+            if val1 == val2:
+                self.flags['ZF'] = 1
+            else:
+                self.flags['ZF'] = 0
+            return
+        result = val1 - val2
         
         if result == 0:
             self.flags['ZF'] = 1
@@ -386,7 +394,7 @@ class Engine:
         else:
             self.register[register] = value
     def jump(self, address):
-        self.pc = self.code_addresses.index(address)
+        self.pc = self.code_addresses.index(address)-1
 
 
     def _update_1bit_register(self, register: int, value: bool):

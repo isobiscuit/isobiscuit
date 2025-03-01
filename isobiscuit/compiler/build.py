@@ -70,6 +70,6 @@ def writeBiscuit(biscuit_file, data_sector, code_sector, memory_sector, other_se
     addFilesToBiscuit(biscuit_file, files)
 
 
-def build(out_file, biasm_files: list[str], fs_files: list[str]):
-    (code, data) = compileBiASM(biasm_files)
+def build(out_file, biasm_files: list[str], fs_files: list[str], debug=False):
+    (code, data) = compileBiASM(biasm_files, debug)
     writeBiscuit(out_file, data, code, "", "", fs_files)
