@@ -89,9 +89,7 @@ OPCODES
 
 ### Registers
  - Registers 0x10-29 are 1  Bit registers
- - Registers 0x2A-2E are 16 Bit registers
- - Registers 0x2F-33 are 32 Bit registers
- - Registers 0x34-38 are 64 Bit registers
+ - Registers 0x2A-38 are Infinity Bit registers
 
 |Register Code|RegisterName|
 |----|---------------------|

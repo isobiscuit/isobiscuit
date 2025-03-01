@@ -40,7 +40,7 @@ def parse_data_sector(data_sector_hex: str):
 
 
 
-# Updated opcodes
+
 opcodes = {
     "wa": [0x40, 0x41, 0x43, 0x44, 0x45, 0x46, 0x47],  # With Address Argument
     "al1": [0x2d, 0x43, 0x44, 0x45, 0x46, 0x47, 0x49, 0x4a],  # Argument Length 1
@@ -62,11 +62,11 @@ def parse_code_sector(code_sector_hex: str):
         elif prefix in opcodes["al1"]:  # Argument Length 1
             if prefix in opcodes["wa"]:  # With Address Argument
                 # Handle 4-byte address for 32-bit opcodes (e.g., LOAD, STORE)
-                parsed_code[address] = [format(prefix, '02x'), struct.unpack(">I", code[offset:offset+4])[0]]
-                offset += 4
+                parsed_code[address] = (format(prefix, '02x'), code[offset], struct.unpack(">I", code[offset+1:offset+5])[0])
+                offset += 5
                 address += 1
             else:
-                parsed_code[address] = [format(prefix, '02x'), code[offset]]
+                parsed_code[address] = (format(prefix, '02x'), code[offset])
                 offset += 1
                 address += 1
         elif prefix in opcodes["al2"]:  # Argument Length 2
@@ -86,7 +86,7 @@ def parse_code_sector(code_sector_hex: str):
                 arg2 = code[offset]
                 offset += 1
                 
-            parsed_code[address] = [format(prefix, '02x'), arg2, arg1]
+            parsed_code[address] = (format(prefix, '02x'), arg2, arg1)
             address += 1
         else:
             raise ValueError(f"Unknown opcode: {hex(prefix)} at offset {offset}")
