@@ -11,13 +11,14 @@ add_later_ops = [
     "jne",
     "jg",
     "jl",
+    "call"
 ]
 
 
 def parse(files: list[str], debug=False):
     code = ""
     for _ in files:
-        for file in glob.glob(_):
+        for file in glob.glob(_, recursive=True):
             with open(file, "r") as f:
                 code += f.read() + "\n"
     code = code.replace("\t", " ")
@@ -68,7 +69,10 @@ def parse(files: list[str], debug=False):
             cmds.append(["jg", line[1]])
         elif line[0] == "jl":
             cmds.append(["jl", line[1]])
-
+        elif line[0] == "call":
+            cmds.append(["call", line[1]])
+        elif line[0] == "ret":
+            cmds.append(["ret"])
         elif line[0].startswith("0x"):
             cmds.append([line[0]])
         elif line[0].endswith("h"):
@@ -176,7 +180,8 @@ def binify(files: list[str], debug=False):
 
             codes[counter] = [OPCODES["mov"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
 
-
+        if cmd[0] == "ret":
+            codes[counter] = [OPCODES["ret"]]
         if cmd[0] == "int":
             codes[counter] = [OPCODES["int"], int(cmd[1], 16)]
 
@@ -263,7 +268,8 @@ def binify(files: list[str], debug=False):
 
         if cmd[0] == "jl":
             codes[address] = [OPCODES["jl"], get_address(cmd[1], procs)]
-
+        if cmd[0] == "call":
+            codes[address] = [OPCODES["call"], get_address(cmd[1], procs)]
 
 
     return (codes, data, counter)    

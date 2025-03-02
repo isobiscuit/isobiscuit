@@ -74,7 +74,6 @@ def build_biscuit(project_name, path=".", debug=False):
     ]
     biasm_files: list[str] = [
         f"{path}/{project_name}/code/**/*.biasm",
-        f"{path}/{project_name}/code/*.biasm",
         
     ]
 
@@ -122,3 +121,6 @@ def main():
         build_biscuit(sys.argv[2], debug=debug)
     if action == "run":
         run_biscuit(sys.argv[2], debug=debug)
+
+if __name__ == "__main__":
+    main()

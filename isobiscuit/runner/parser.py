@@ -42,8 +42,9 @@ def parse_data_sector(data_sector_hex: str):
 
 
 opcodes = {
-    "wa": [0x40, 0x41, 0x43, 0x44, 0x45, 0x46, 0x47],  # With Address Argument
-    "al1": [0x2d, 0x43, 0x44, 0x45, 0x46, 0x47, 0x49, 0x4a],  # Argument Length 1
+    "wa": [0x40, 0x41, 0x43, 0x44, 0x45, 0x46, 0x47, 0x4b],  # With Address Argument
+    "al0": [0x4c],
+    "al1": [0x2d, 0x43, 0x44, 0x45, 0x46, 0x47, 0x49, 0x4a, 0x4b],  # Argument Length 1
     "al2": [0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x2a, 0x2b, 0x2c, 0x2e, 0x2f, 0x40, 0x41, 0x42, 0x48]  # Argument Length 2
 }
 
@@ -58,6 +59,9 @@ def parse_code_sector(code_sector_hex: str):
         offset += 1
         
         if prefix == 0x03:  # Special case for 0x03 prefix (no op)
+            address += 1
+        elif prefix in opcodes["al0"]:
+            parsed_code[address] = (format(prefix, '02x'),)
             address += 1
         elif prefix in opcodes["al1"]:  # Argument Length 1
             if prefix in opcodes["wa"]:  # With Address Argument

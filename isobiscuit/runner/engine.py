@@ -10,6 +10,7 @@ class Engine:
                   debug=False
                 ):
         self.debug = debug
+        self.ret_pcs = []
         self.stack = []
         self.register = {
             0x10: False,
@@ -197,9 +198,14 @@ class Engine:
         elif opcode == '49':
             interrupt = op[1]
             self.interrupt(interrupt)
-        elif opcode == '4A':
+        elif opcode == '4a':
             mode = op[1]
             self.change_mode(mode)
+        elif opcode == '4b':
+            addr = op[1]
+            self.call(addr)
+        elif opcode == '4c':
+            self.ret()
 
     
     def change_mode(self, mode: int):
@@ -360,7 +366,12 @@ class Engine:
 
 
 
-
+    def call(self, address):
+        self.ret_pcs.append(self.pc)
+        self.jump(address)
+    def ret(self):
+        pc = self.ret_pcs.pop()
+        self.pc = pc
 
 
 

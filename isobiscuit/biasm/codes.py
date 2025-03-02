@@ -69,6 +69,8 @@ OPCODES = {
     "mov": 0x48,
     "int": 0x49,
     "mode": 0x4a,
+    "call": 0x4b,
+    "ret": 0x4c
         
 }
 
