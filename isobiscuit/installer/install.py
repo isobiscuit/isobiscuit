@@ -12,6 +12,7 @@ def install(url: str, biscuit_name, path="."): # mylib#github:user/repo
     lib = _[0]
     source = _[1]
     _install(source, lib, biscuit_name, path)
+    
 
 
 
@@ -29,7 +30,7 @@ def _install(source: str, lib: str, biscuit_name, path="."): # example {source: 
         return
     
     download_biasm(url_lib, lib, biscuit_name, path)
-    
+    install_requirements(url_require, biscuit_name, path)
 
 def download_biasm(url, lib_name,biscuit_name: str, path="."):
     res = requests.get(url)
@@ -39,6 +40,7 @@ def download_biasm(url, lib_name,biscuit_name: str, path="."):
             f.close()
 
 def install_requirements(url, biscuit_name, path):
+    print(f"Fetching requirements of `{url}`")
     res = requests.get(url)
 
     if res.status_code == 200:
@@ -51,6 +53,6 @@ def install_requirements(url, biscuit_name, path):
         install(i, biscuit_name, path)
 
 def from_github(user, repo, lib):
-    url_lib = f"https://raw.githubusercontent.com/{user}/{repo}/master/lib_{lib}.biasm"
-    url_require = f"https://raw.githubusercontent.com/{user}/{repo}/master/require_{lib}.json"
+    url_lib =       f"https://raw.githubusercontent.com/{user}/{repo}/master/lib_{lib}.biasm"
+    url_require =   f"https://raw.githubusercontent.com/{user}/{repo}/master/require_{lib}.json"
     return (url_lib, url_require, lib)
