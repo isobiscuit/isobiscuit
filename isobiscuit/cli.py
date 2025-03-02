@@ -5,6 +5,7 @@ import os
 import yaml
 from .compiler import build
 from .runner import run
+from .installer import installFunc
 import sys
 import glob
 
@@ -112,6 +113,9 @@ def run_biscuit(biscuit, path=".", debug=False):
     run(biscuit, debug=debug)
 
 
+def install_lib(biscuit, url, path="."):
+    installFunc(url, biscuit, path)
+
 def main():
     debug = sys.argv[-1] == "-d"
     action = sys.argv[1]
@@ -121,6 +125,7 @@ def main():
         build_biscuit(sys.argv[2], debug=debug)
     if action == "run":
         run_biscuit(sys.argv[2], debug=debug)
-
+    if action == "install":
+        install_lib(sys.argv[2], sys.argv[3])
 if __name__ == "__main__":
     main()
