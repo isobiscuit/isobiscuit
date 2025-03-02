@@ -86,7 +86,7 @@ def parse_code_sector(code_sector_hex: str):
                 arg2 = code[offset]
                 offset += 1
                 
-            parsed_code[address] = (format(prefix, '02x'), arg2, arg1)
+            parsed_code[address] = (format(prefix, '02x'), arg1, arg2)
             address += 1
         else:
             print(parsed_code)

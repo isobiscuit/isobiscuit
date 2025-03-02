@@ -122,6 +122,11 @@ class Engine:
         elif opcode == '1f':
             r1 = op[1]
             r2 = op[2]
+            result = self.register[r1] % self.register[r2]
+            self.register[r1] = result
+        elif opcode == '20':
+            r1 = op[1]
+            r2 = op[2]
             result = self.register[r1] ** self.register[r2]
             self.register[r1] = result
 
@@ -160,12 +165,12 @@ class Engine:
         
         
         elif opcode == '40':
-            r1 = op[2]
-            mem_addr = op[1]
+            r1 = op[1]
+            mem_addr = op[2]
             self.register[r1] = self.memory[mem_addr]
         elif opcode == '41':
-            r1 = op[2]
-            mem_addr = op[1]
+            r1 = op[1]
+            mem_addr = op[2]
             self.memory[mem_addr] = self.register[r1]
         elif opcode == '42':
             r1 = op[1]
