@@ -52,5 +52,5 @@ def install_requirements(url, biscuit_name, path):
 
 def from_github(user, repo, lib):
     url_lib = f"https://raw.githubusercontent.com/{user}/{repo}/master/lib_{lib}.biasm"
-    url_require = f"https://raw.githubusercontent.com/user/repository/branch/require_{lib}.json"
+    url_require = f"https://raw.githubusercontent.com/{user}/{repo}/master/require_{lib}.json"
     return (url_lib, url_require, lib)
