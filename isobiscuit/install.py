@@ -7,7 +7,7 @@
 def main():
     from .installer import installFunc
     import sys
-    installFunc(sys.argv[1], sys.argv[2])
+    installFunc(sys.argv[2], sys.argv[1])
 
 
 

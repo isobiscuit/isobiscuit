@@ -48,7 +48,7 @@ def install_requirements(url, biscuit_name, path):
             print(f"Can not install requirements {url}. You have to install it manuelly")
             return
     for i in data["require"]:
-        install(i["source"], i["lib"], biscuit_name, path)
+        install(i, biscuit_name, path)
 
 def from_github(user, repo, lib):
     url_lib = f"https://raw.githubusercontent.com/{user}/{repo}/master/lib_{lib}.biasm"
