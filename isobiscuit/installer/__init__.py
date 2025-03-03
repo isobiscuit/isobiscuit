@@ -1,1 +1,1 @@
-from .install import install as installFunc
+from .install import install as installFunc, remove, update
