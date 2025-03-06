@@ -1,7 +1,9 @@
-
+import colorama
 import time
-
-
+colorama.init()
+hardware_memory_addresses = [
+    0xFFFF0000
+]
 
 class Engine:
     def __init__(self, data_sector: dict,
@@ -63,7 +65,10 @@ class Engine:
 
         self._code_sector = code_sector
         self._data_sector = data_sector
-        self.memory: dict = mem_sector
+        self.memory = {
+            0xFFFF0000: None
+        }
+        self.memory.update(mem_sector)
         self.memory.update(data_sector)
         self.memory.update(code_sector)
         self.in_cmp_mode = False
@@ -77,6 +82,8 @@ class Engine:
         self.code_addresses = list(code_sector.keys())
         self.code_len = len(self.code_addresses)
         self.mode = 0x12
+
+        self.hardware = Hardware(debug)
     def run(self):
         try:
             while self.pc < self.code_len:
@@ -236,7 +243,13 @@ class Engine:
             arg1 = self.register[0x30]
             exit(arg1)
         elif call == 0x01:
-            pass
+            hardware_memory = {}
+            for i in hardware_memory_addresses:
+                if self.debug:
+                    print(f"[UPDATE] Updating Hardware address: {i}")
+                hardware_memory[i] = self.memory[i]
+            result = self.hardware.update(hardware_memory)
+            self.memory.update(result)
         elif call == 0x02:
             arg1 = self.register[0x30]/1000
             time.sleep(arg1)
@@ -434,3 +447,57 @@ class Engine:
 
     
 
+class Hardware:
+    def __init__(self, debug):
+        self.hardware_memory = {}
+        self.debug = debug
+    def update(self, hardware_memory): #Hardware memory is the memory of the engine with 0xFFFF####
+        self.hardware_memory = hardware_memory
+
+        self.update_color()
+
+
+        return self.hardware_memory
+
+    def update_color(self):
+        # Change color of terminal
+        # Colors are hexadezimal
+        # 0xFFFF0000 Color
+        color = self.hardware_memory[0xFFFF0000]
+
+
+        match color:
+            case 0x0:
+                color = colorama.Fore.RESET
+            case 0x1:
+                color = colorama.Fore.WHITE
+            case 0x2:
+                color = colorama.Fore.BLACK
+            case 0x3:
+                color = colorama.Fore.YELLOW
+            case 0x4:
+                color = colorama.Fore.RED
+            case 0x5:
+                color = colorama.Fore.BLUE
+            case 0x6:
+                color = colorama.Fore.GREEN
+            case 0x7:
+                color = colorama.Fore.MAGENTA
+            case 0x8:
+                color = colorama.Fore.CYAN
+            case 0x9:
+                color = colorama.Fore.LIGHTYELLOW_EX
+            case 0xa:
+                color = colorama.Fore.LIGHTBLACK_EX
+            case 0xb:
+                color = colorama.Fore.LIGHTCYAN_EX
+            case 0xc:
+                color = colorama.Fore.LIGHTMAGENTA_EX
+            case 0xd:
+                color = colorama.Fore.LIGHTGREEN_EX
+            case 0xe:
+                color = colorama.Fore.LIGHTWHITE_EX
+            case 0xf:
+                color = colorama.Fore.LIGHTRED_EX
+        print(color, end="")
+        

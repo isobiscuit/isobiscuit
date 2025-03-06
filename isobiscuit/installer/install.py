@@ -32,7 +32,7 @@ def install(url: str, biscuit_name, path=".", force=False): # mylib#github:user/
 def _install(source: str, lib: str, biscuit_name, path=".", force=False): # example {source: 'github:user/repo', lib: 'coolnicelib'}
     if os.path.exists(f"{path}/{biscuit_name}/code/lib/{lib}.biasm"):
         if not force:
-            print(f"[INFO] Package '{lib}' is already installed. Use 'bfetcher update' to fetch the latest version.")
+            print(f"[INFO] Package '{lib}' is already installed. Use 'bfetcher -u {biscuit_name} {lib}#{source}' to fetch the latest version.")
             return
     print(f"Install {lib}...")
     _ = source.split(":")
