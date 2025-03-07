@@ -1,5 +1,8 @@
 import colorama
 import time
+import socket
+
+
 colorama.init()
 hardware_memory_addresses = [
     0xFFFF0000
@@ -451,11 +454,11 @@ class Hardware:
     def __init__(self, debug):
         self.hardware_memory = {}
         self.debug = debug
+        self.inet_connection = None
     def update(self, hardware_memory): #Hardware memory is the memory of the engine with 0xFFFF####
         self.hardware_memory = hardware_memory
-
         self.update_color()
-
+        self.internet()
 
         return self.hardware_memory
 
@@ -463,7 +466,7 @@ class Hardware:
         # Change color of terminal
         # Colors are hexadezimal
         # 0xFFFF0000 Color
-        color = self.hardware_memory[0xFFFF0000]
+        color = self.hardware_memory[0xFFFF_0000]
 
 
         match color:
@@ -500,4 +503,61 @@ class Hardware:
             case 0xf:
                 color = colorama.Fore.LIGHTRED_EX
         print(color, end="")
+    def internet(self):
+        action = self.hardware_memory[0xFFFF_0100]
+        if action == None:
+            return
+        else:
+            if action == 0x00: # Listen
+                fam  = self.hardware_memory[0xFFFF_0101]
+                kind = self.hardware_memory[0xFFFF_0102]
+                host = self.hardware_memory[0xFFFF_0103]
+                port = self.hardware_memory[0xFFFF_0104]
+                if host == None:return
+                if fam == 0x00: # Inet:
+                    fam = socket.AF_INET
+                else:return
+                if kind == 0x00: # UPD
+                    kind = socket.SOCK_DGRAM
+                elif kind == 0x01: # TCP
+                    kind = socket.SOCK_STREAM
+                else:return
+                sock = socket.socket(fam, kind)
+                sock.bind((socket.gethostbyname(host), port))
+                self.inet_connection[port] = sock
+            elif action == 0x01: # Connect
+                fam  = self.hardware_memory[0xFFFF_0101]
+                kind = self.hardware_memory[0xFFFF_0102]
+                host = self.hardware_memory[0xFFFF_0103]
+                port = self.hardware_memory[0xFFFF_0104]
+                if host == None:return
+                if fam == 0x00: # Inet:
+                    fam = socket.AF_INET
+                else:return
+                if kind == 0x00: # UPD
+                    kind = socket.SOCK_DGRAM
+                elif kind == 0x01: # TCP
+                    kind = socket.SOCK_STREAM
+                else:return
+                sock = socket.socket(fam, kind)
+                sock.connect((socket.gethostbyname(host), port))
+                self.inet_connection[port] = sock
+            elif action == 0x02: #send
+                port = self.hardware_memory[0xFFFF_0104]
+                message = self.hardware_memory[0xFFFF_0105]
+                sock: socket.socket = self.inet_connection[port]
+                
+                sock.send(bytes(message))
+            elif action == 0x03: # recv
+                port = self.hardware_memory[0xFFFF_0104]
+                bufsize: int = self.hardware_memory[0xFFFF_0106]
+                sock = self.inet_connection[port]
+                msg = sock.recv(bufsize)
+                self.hardware_memory[0xFFFF_0107] = msg
+            elif action == 0x04: # exit
+                port = self.hardware_memory[0xFFFF_0104]
+                self.inet_connection[port].close()
+        self.hardware_memory[0xFFFF_0100] = None
+                
+        
         
