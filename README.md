@@ -23,3 +23,4 @@ you have to write it without `.biscuit`
 ### [BBin Format](./bbin.md)
 ### [The Biscuit File Format](./biscuit-file-format.md)
 ### [Biscuit Calls](./biscuit_calls.md)
+### [Biscuit Assembly](./biasm.md)
