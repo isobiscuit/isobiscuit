@@ -324,7 +324,7 @@ class Hardware:
     def __init__(self, debug):
         self.hardware_memory = {}
         self.debug = debug
-        self.inet_connection = None
+        self.inet_connection = list[socket.socket]()
     def update(self, hardware_memory): #Hardware memory is the memory of the engine with 0xFFFF####
         self.hardware_memory = hardware_memory
         self.update_color()
