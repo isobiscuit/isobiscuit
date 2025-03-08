@@ -123,27 +123,13 @@ def install_lib(biscuit, url, path="."):
 def main():
     biscuit = sys.argv[2]
     args = sys.argv[2:]
-    in_biscuit_folder = False
-    if os.path.exists("./biscuit.yml"):
-        biscuit = "./"
-        args = sys.argv[1:]
-        in_biscuit_folder = True
     debug = sys.argv[-1] == "-d"
     action = sys.argv[1]
     if action == "init":
-        if in_biscuit_folder:
-            print("You are already in a biscuit folder")
-            exit(1)
         init_biscuit(biscuit)
     if action == "build":
-        if in_biscuit_folder:
-            print("In Biscuit Folder is not supported with biscuit build")
-            return
         build_biscuit(biscuit, debug=debug)
     if action == "run":
-        if in_biscuit_folder:
-            run_biscuit(f"../{args[0]}")
-            return
         run_biscuit(biscuit, debug=debug)
     if action == "install":
         install_lib(biscuit, args[0])
