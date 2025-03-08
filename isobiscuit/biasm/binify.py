@@ -225,9 +225,9 @@ def binify(files: list[str], debug=False):
             codes[counter] = [OPCODES["not"], REGISTERS[cmd[1]]]
 
         if cmd[0] == "shl":
-            codes[counter] = [OPCODES["sh"], REGISTERS[cmd[1]], cmd[2]]
+            codes[counter] = [OPCODES["shl"], REGISTERS[cmd[1]], cmd[2]]
         if cmd[0] == "shr":
-            codes[counter] = [OPCODES["sh"], REGISTERS[cmd[1]], cmd[2]]
+            codes[counter] = [OPCODES["shr"], REGISTERS[cmd[1]], cmd[2]]
         
 
         
