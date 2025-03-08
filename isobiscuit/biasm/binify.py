@@ -33,6 +33,8 @@ def parse(files: list[str], debug=False):
         if line != "":
             if line.startswith(" "):
                 code += line[1:]+"\n"
+            if line.startswith(";;"):
+                pass
             else:
                 code+=line+"\n"
     code = code[:-1]
