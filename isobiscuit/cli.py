@@ -30,7 +30,7 @@ def init_biscuit(name, path="."):
             "biscuit.yaml": {
                 "name": name,
                 "version": "0.1.0",
-                "entrypoint": "code/main.basm"
+                "entrypoint": "code/main.biasm"
             },
             "code/main.biasm": "; Main.biasm",
             #"tests/test1.btest": "",
@@ -121,15 +121,31 @@ def install_lib(biscuit, url, path="."):
     installFunc(url, biscuit, path)
 
 def main():
+    biscuit = sys.argv[2]
+    args = sys.argv[2:]
+    in_biscuit_folder = False
+    if os.path.exists("./biscuit.yml"):
+        biscuit = "./"
+        args = sys.argv[1:]
+        in_biscuit_folder = True
     debug = sys.argv[-1] == "-d"
     action = sys.argv[1]
     if action == "init":
-        init_biscuit(sys.argv[2])
+        if in_biscuit_folder:
+            print("You are already in a biscuit folder")
+            exit(1)
+        init_biscuit(biscuit)
     if action == "build":
-        build_biscuit(sys.argv[2], debug=debug)
+        if in_biscuit_folder:
+            print("In Biscuit Folder is not supported with biscuit build")
+            return
+        build_biscuit(biscuit, debug=debug)
     if action == "run":
-        run_biscuit(sys.argv[2], debug=debug)
+        if in_biscuit_folder:
+            run_biscuit(f"../{args[0]}")
+            return
+        run_biscuit(biscuit, debug=debug)
     if action == "install":
-        install_lib(sys.argv[2], sys.argv[3])
+        install_lib(biscuit, args[0])
 if __name__ == "__main__":
     main()
