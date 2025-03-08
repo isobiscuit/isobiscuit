@@ -9,84 +9,25 @@ hardware_memory_addresses = [
 ]
 
 class Engine:
-    def __init__(self, data_sector: dict,
-                  code_sector: dict[int, tuple[str|int]],
-                  mem_sector: dict,
-                  debug=False
-                ):
+    def __init__(self, data_sector, code_sector, mem_sector, debug=False):
         self.debug = debug
-        self.ret_pcs = []
-        self.stack = []
-        self.register = {
-            0x10: False,
-            0x11: False,
-            0x12: False,
-            0x13: False,
-            0x14: False,
-            0x15: False,
-            0x16: False,
-            0x17: False,
-            0x18: False,
-            0x19: False,
-            0x1a: False,
-            0x1b: False,
-            0x1c: False,
-            0x1d: False,
-            0x1e: False,
-            0x1f: False,
-            0x20: False,
-            0x21: False,
-            0x22: False,
-            0x23: False,
-            0x24: False,
-            0x25: False,
-            0x26: False,
-            0x27: False,
-            0x28: False,
-            0x29: False,
-            
-            0x2A: None,
-            0x2B: None,
-            0x2C: None,
-            0x2D: None,
-            0x2E: None,
-            0x2F: None,
-            0x30: None,
-            0x31: None,
-            0x32: None,
-            0x33: None,
-            0x34: None,
-            0x35: None,
-            0x36: None,
-            0x37: None,
-            0x38: None,
-            0x3A: None,
-            0x3B: None,
-            
-            
-        }
-
-        self._code_sector = code_sector
-        self._data_sector = data_sector
-        self.memory = {
-            0xFFFF0000: None
-        }
-        self.memory.update(mem_sector)
-        self.memory.update(data_sector)
-        self.memory.update(code_sector)
-        self.in_cmp_mode = False
-        self.flags = {
-            'ZF': 0,
-            'CF': 0,
-            'SF': 0,
-            'OF': 0
-        }
+        self.register = {i: 0 for i in range(0x10, 0x3C)}
+        self.memory = {**data_sector, **code_sector}
+        self.flags = {'ZF': 0, 'CF': 0, 'SF': 0, 'OF': 0}
         self.pc = 0
         self.code_addresses = list(code_sector.keys())
         self.code_len = len(self.code_addresses)
-        self.mode = 0x12
+        self.ret_pcs = []
+        self.OPCODES = {
+            '1b': self.add, '1c': self.sub, '1d': self.mul, '1e': self.div,
+            '1f': self.mod, '20': self.pow, '2a': self.and_op, '2b': self.or_op,
+            '2c': self.xor, '2d': self.not_op, '2e': self.shl, '2f': self.shr,
+            '40': self.load, '41': self.store, '42': self.cmp, '43': self.jmp,
+            '44': self.je, '45': self.jne, '46': self.jg, '47': self.jl,
+            '48': self.mov, '49': self.interrupt, '4a': self.change_mode,
+            '4b': self.call, '4c': self.ret
+        }
 
-        self.hardware = Hardware(debug)
     def run(self):
         try:
             while self.pc < self.code_len:
@@ -96,140 +37,56 @@ class Engine:
                     print(f"[Execute] [Address:{hex(address)}] {op}")
                 self.execute(op)
                 self.pc += 1
-                if self.pc >= self.code_len:
-                    break
         except KeyError as e:
             print(f"[ERROR] Key Error: {e}")
-            print(f"Memory: {self.memory}")
-            print(f"Code addresses: {self.code_addresses}")
-            print(f"Code Sector: {self._code_sector}")
-            print(f"Data Sector: {self._data_sector}")
-            print(f"Program Counter: {self.pc}")
             raise e
-    def execute(self, op: tuple):
-        
+
+    def execute(self, op):
         opcode: str = op[0]
-        if opcode == '1b':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] + self.register[r2]
-            self.register[r1] = result
-        elif opcode == '1c':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] - self.register[r2]
-            self.register[r1] = result
-        elif opcode == '1d':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] * self.register[r2]
-            self.register[r1] = result
-        elif opcode == '1e':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] / self.register[r2]
-            self.register[r1] = result
-        elif opcode == '1f':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] % self.register[r2]
-            self.register[r1] = result
-        elif opcode == '20':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] ** self.register[r2]
-            self.register[r1] = result
+        if opcode in self.OPCODES:
+            self.OPCODES[opcode](op) 
+        else:
+            raise ValueError(f"Unknown opcode: {opcode}")
 
+    def add(self, op): self.register[op[1]] += self.register[op[2]]
+    def sub(self, op): self.register[op[1]] -= self.register[op[2]]
+    def mul(self, op): self.register[op[1]] *= self.register[op[2]]
+    def div(self, op): self.register[op[1]] //= self.register[op[2]]
+    def mod(self, op): self.register[op[1]] %= self.register[op[2]]
+    def pow(self, op): self.register[op[1]] **= self.register[op[2]]
 
-        elif opcode == '2a':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] & self.register[r2]
-            self.register[r1] = result
-        elif opcode == '2b':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] | self.register[r2]
-            self.register[r1] = result
-        elif opcode == '2c':
-            r1 = op[1]
-            r2 = op[2]
-            result = self.register[r1] ^ self.register[r2]
-            self.register[r1] = result
-        elif opcode == '2d':
-            r1 = op[1]
-            result = ~self.register[r1]
-            self.register[r1] = result
-        
-        elif opcode == '2e':
-            r1 = op[1]
-            imm = op[2]
-            result = self.register[r1] << imm
-            self.register[r1] = result
+    def and_op(self, op): self.register[op[1]] &= self.register[op[2]]
+    def or_op(self, op): self.register[op[1]] |= self.register[op[2]]
+    def xor(self, op): self.register[op[1]] ^= self.register[op[2]]
+    def not_op(self, op): self.register[op[1]] = ~self.register[op[1]]
+    def shl(self, op): self.register[op[1]] <<= op[2]
+    def shr(self, op): self.register[op[1]] >>= op[2]
 
-        elif opcode == '2f':
-            r1 = op[1]
-            imm = op[2]
-            result = self.register[r1] >> imm
-            self.register[r1] = result
-        
-        
-        elif opcode == '40':
-            r1 = op[1]
-            mem_addr = op[2]
-            self.register[r1] = self.memory[mem_addr]
-        elif opcode == '41':
-            r1 = op[1]
-            mem_addr = op[2]
-            self.memory[mem_addr] = self.register[r1]
-        elif opcode == '42':
-            r1 = op[1]
-            r2 = op[2]
-            self.cmp(r1, r2)
+    def load(self, op): self.register[op[1]] = self.memory[op[2]]
+    def store(self, op): self.memory[op[2]] = self.register[op[1]]
 
-        elif opcode == '43':
-            addr = op[1]
-            self.jump(addr)
-        elif opcode == '44':
-            if self.flags['ZF'] == 1:
-                addr = op[1]
-                self.jump(addr)
-        elif opcode == '45':
-            if self.flags['ZF'] == 0:
-                addr = op[1]
-                self.jump(addr)
-        elif opcode == '46':
-            if self.flags['ZF'] == 0 and self.flags['SF'] == self.flags['OF']:
-                addr = op[1]
-                self.jump(addr)
-        elif opcode == '47':
-            if self.flags['SF'] != self.flags['OF']:
-                addr = op[1]
-                self.jump(addr)
-        elif opcode == '48':
-            r1 = op[1]
-            r2 = op[2]
-            self.register[r1] = self.register[r2]
-        elif opcode == '49':
-            interrupt = op[1]
-            self.interrupt(interrupt)
-        elif opcode == '4a':
-            mode = op[1]
-            self.change_mode(mode)
-        elif opcode == '4b':
-            addr = op[1]
-            self.call(addr)
-        elif opcode == '4c':
-            self.ret()
+    def jmp(self, op): self.jump(op[1])
+    def je(self, op):  # Jump if equal
+        if self.flags['ZF']: self.jump(op[1])
+    def jne(self, op):  # Jump if not equal
+        if not self.flags['ZF']: self.jump(op[1])
+    def jg(self, op):  # Jump if greater
+        if not self.flags['ZF'] and self.flags['SF'] == self.flags['OF']: self.jump(op[1])
+    def jl(self, op):  # Jump if less
+        if self.flags['SF'] != self.flags['OF']: self.jump(op[1])
+
+    def mov(self, op): self.register[op[1]] = self.register[op[2]]
 
     
-    def change_mode(self, mode: int):
+    def change_mode(self, op):
+        mode = op[1]
         print("[INFO] mode changing is in developing")
         self.mode = mode
 
 
 
-    def interrupt(self, interrupt):
+    def interrupt(self, op):
+        interrupt = op[1]
         if interrupt == 0x45:
             self.biscuit_call()
         elif interrupt == 0x80:
@@ -387,10 +244,10 @@ class Engine:
 
 
 
-    def call(self, address):
+    def call(self, op):
         self.ret_pcs.append(self.pc)
-        self.jump(address)
-    def ret(self):
+        self.jump(op[1])
+    def ret(self, op):
         pc = self.ret_pcs.pop()
         self.pc = pc
 
@@ -398,9 +255,11 @@ class Engine:
 
 
 
-    def cmp(self, r1, r2):
+    def cmp(self, op):
+        r1 = op[1]
+        r2 = op[2]
         val1 = self.register[r1]
-        val2 = self.register[r2]
+        val2 = self.register[r1]
         if isinstance(val1, str) or isinstance(val2, str):
             if val1 == val2:
                 self.flags['ZF'] = 1
