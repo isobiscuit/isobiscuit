@@ -14,9 +14,10 @@ def update(url: str, biscuit_name, path="."):
 
 
 def install(url: str, biscuit_name, path=".", force=False): # mylib#github:user/repo
-    
     _ = url.split("#")
     lib = _[0]
+    if force:
+        remove(lib, biscuit_name, path)
     try:
         source = _[1]
     except IndexError:
