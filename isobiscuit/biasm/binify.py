@@ -33,8 +33,6 @@ def parse(files: list[str], debug=False):
         if line != "":
             if line.startswith(" "):
                 code += line[1:]+"\n"
-            if line.startswith(";;"):
-                pass
             else:
                 code+=line+"\n"
     code = code[:-1]
@@ -275,7 +273,11 @@ def binify(files: list[str], debug=False):
         if cmd[0] == "call":
             codes[address] = [OPCODES["call"], get_address(cmd[1], procs)]
 
-
+    if debug:
+        print("code sektor")
+        print(codes)
+        print("data sektore")
+        print(data)
     return (codes, data, counter)    
 
 
