@@ -242,6 +242,8 @@ def binify(files: list[str], debug=False):
     for i in add_later:
         address = i[0]
         cmd = i[1]
+        if debug:
+            print(f"resolve proc: [{cmd}: {address}]")
         if cmd[0] == "load":
             codes[address] = [OPCODES["load"], REGISTERS[cmd[1]], get_address(cmd[2], procs)]
         if cmd[0] == "store":
