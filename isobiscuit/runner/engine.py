@@ -10,6 +10,7 @@ hardware_memory_addresses = [
 
 class Engine:
     def __init__(self, data_sector, code_sector, mem_sector, debug=False):
+        self.hardware = Hardware(debug)
         self.debug = debug
         self.register = {i: 0 for i in range(0x10, 0x3C)}
         self.memory = {**data_sector, **code_sector}
