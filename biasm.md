@@ -6,7 +6,7 @@ BiASM is similar to normal assembly but has a few differences:
  The `mov` command can only load from one register to another
 
  - if you enter a hexadecimal number `0x42` or a string `0x'41,73,63,69,69,20,48,65,78'`, then this will be loaded into the data sector. You don't need to use a `jmp` command
- 
+    - If you want a really byte string the use: `b0x'...'` this will not encode
  - With the `mode` command you can change the mode, e.g. from biscuit to linux (This feature is currently in development)
 
  - you don't need a separator with ',' in the command, the separator is the space

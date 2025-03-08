@@ -22,6 +22,14 @@ def parse_data_sector(data_sector_hex: str):
             offset += 1
             parsed_data[address] = string_data.decode()
             address += 1
+        elif prefix == 0x06:
+            offset+=2
+            string_data = b""
+            while offset < len(data) and data[offset] != 0x02:
+                string_data += bytes([data[offset]])
+                offset += 1
+            parsed_data[address] = string_data
+            address += 1
         elif prefix == 0x04:
             offset += 1
             int_value = struct.unpack(">I", data[offset:offset+4])[0]

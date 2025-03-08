@@ -10,7 +10,7 @@
 |0x03|no op|no operation, used if the procedure has an int, which is in the data sector|
 |0x04|integer (4bytes)|use this in the data sector as prefix for a 4 bytes long int
 |0x05|integer (8bytes)|use this in the data sector as prefix for a 8 bytes long int
-|0x06|reserved
+|0x06|Byte String|Prefix for "0x01" and mark the string as Byte String "06,01,...,02"
 |0x07|reserved
 |0x08|reserved
 |0x09|reserved

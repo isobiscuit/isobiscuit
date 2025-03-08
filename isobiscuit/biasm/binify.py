@@ -77,7 +77,8 @@ def parse(files: list[str], debug=False):
             cmds.append([line[0]])
         elif line[0].endswith("h"):
             cmds.append([f"0x{line[0][:-1]}"])
-
+        elif line[0].startswith("b0x'"):
+            cmds.append([line[0]])
 
 
 
@@ -160,7 +161,16 @@ def binify(files: list[str], debug=False):
         if cmd[0] == "PROC":
             procs[cmd[1]] = counter
             continue
-
+        if str(cmd[0]).startswith("b0x'"):
+            s1 = str(cmd[0][4:])
+            s2 = str(s1[:-1])
+            l1 = s2.split(",")
+            l2 = [0x06, 0x01]
+            for i in l1:
+                l2.append(int(i, 16))
+            l2.append(0x02)
+            data[counter] = l2
+            codes[counter] = [0x03]
         if str(cmd[0]).startswith("0x'"):
             s1 = str(cmd[0][3:])
             s2 = str(s1[:-1])
