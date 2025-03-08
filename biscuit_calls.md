@@ -19,14 +19,14 @@ You can make a Biscuit Call with `int 0x45`
 |Hardware Address|Name|Description|
 |--------|-------------|-----------------------------------------------|
 0xFFFF0000|Terminal Color|Change the terminal color|
-
-
-
-
-
-
-
-
+0xFFFF0100|Socket Action|Choice action of socket[port]|
+0xFFFF0101|Address Family|The address family of the socket|
+0xFFFF0102|Socket kind|The connection way of socket|
+0xFFFF0103|host|the host as string|
+0xFFFF0104|Port|the port as int|
+0xFFFF0105|Message|the message as string|
+0xFFFF0106|Bufsize|the bufsize for receiving messages|
+0xFFFF0107|Socket output|The recived message from socket|
 
 
 ## Colors
@@ -49,3 +49,25 @@ You can make a Biscuit Call with `int 0x45`
 |0x0d|LIGHTGREEN
 |0x0e|LIGHTWHITE
 |0x0f|LIGHTRED
+
+## Socket Actions
+|Action Hex|Action Name|
+|-|-|
+|0x00|Listen and bind|
+|0x01|Connect|
+|0x02|send|
+|0x03|recv|
+|0x04|exit|
+
+## Socket Address Families
+|Familiy hex|Family Name|
+|-|-|
+|0x00|Inet|
+
+## Socket Kinds
+|Kind Hex|Kind Name|
+|-|-|
+|0x00|UDP|
+|0x01|TCP|
+
+
