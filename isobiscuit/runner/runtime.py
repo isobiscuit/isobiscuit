@@ -36,7 +36,7 @@ def save_biscuit(biscuit_file, data_sector, code_sector, mem_sector, other_secto
     zip = zip
     new_zip_bytes = io.BytesIO()
     print(biscuit_file)
-    with zipfile.ZipFile(new_zip_bytes, 'w') as new_zip_file:
+    with zipfile.ZipFile(new_zip_bytes, 'w', zipfile.ZIP_DEFLATED) as new_zip_file:
         for file_name in zip.namelist():
             file_data = zip.read(file_name)
             new_zip_file.writestr(file_name, file_data)
