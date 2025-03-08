@@ -150,7 +150,13 @@ class Engine:
             print(f"Program Counter: {self.pc}")
             print(f"Mode: {self.mode}")
             print(f"Code Sector Index: {self.code_addresses}")
-            
+        elif call == 0x06:
+            arg1 = self.register[0x30]
+            arg2 = self.register[0x31]
+            self.fs_write_file(arg1, arg2)
+        elif call == 0x07:
+            arg1 = self.register[0x30]
+            self.fs_read_file(arg1)
 
 
     def syscall(self):
@@ -164,7 +170,15 @@ class Engine:
 
 
 
-
+    def fs_read_file(self, file):
+        self.register[0x2f] =  self.zip.read(file)
+    def fs_write_file(self, file, text):
+        self.zip.write(file, text)
+    def fs_exists_file(self, file):
+        if file in self.zip.namelist():
+            self.register[0x2f] = 1
+        else:
+            self.register[0x2f] = 0
 
 
 

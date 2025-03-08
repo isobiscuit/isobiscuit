@@ -14,7 +14,7 @@ You can make a Biscuit Call with `int 0x45`
 |0x03|BISC_INPUT|Input from the console, wait for input. The result will be in `eax`. ebx is the memory address for the string|
 |0x04|BISC_WRITE|Write something|
 |0x05|BISC_DEBUG|Print all information for debugging|
-|0x06|BISC_WRITE_FILE|Write in a file (ebx)|
+|0x06|BISC_WRITE_FILE|Write in a file (ebx), the text is (ecx)|
 |0x07|BISC_READ_FILE|Read a file (ebx)|
 ## Hardware Addresses
 |Hardware Address|Name|Description|
