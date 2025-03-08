@@ -18,6 +18,7 @@ hardware_memory_addresses = [
 
 class Engine:
     def __init__(self, data_sector, code_sector, mem_sector, debug=False):
+        self.stack = []
         self.hardware = Hardware(debug)
         self.debug = debug
         self.register = {i: 0 for i in range(0x10, 0x3C)}
@@ -427,6 +428,8 @@ class Hardware:
             elif action == 0x02: #send
                 message = self.hardware_memory[0xFFFF_0105]
                 sock: socket.socket = self.inet_connection[port]
+                if self.debug:
+                    print(f"[SOCKET] SENDING '{message}'")
                 if isinstance(message, bytes):
                     sock.send(message)
                 else:
