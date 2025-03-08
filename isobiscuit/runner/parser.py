@@ -28,6 +28,7 @@ def parse_data_sector(data_sector_hex: str):
             while offset < len(data) and data[offset] != 0x02:
                 string_data += bytes([data[offset]])
                 offset += 1
+            offset+=1
             parsed_data[address] = string_data
             address += 1
         elif prefix == 0x04:
