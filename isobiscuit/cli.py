@@ -1,6 +1,6 @@
 
 
-
+from pathlib import Path
 import os
 import yaml
 from .compiler import build
@@ -64,7 +64,8 @@ def init_biscuit(name, path="."):
                 file.write(content)
 
 """Build Biscuit"""
-def build_biscuit(project_name, path=".", debug=False):
+def build_biscuit(project_name: str, path=".", debug=False):
+    project_name = Path(project_name).resolve().name
     data_sector = ""
     code_sector = ""
     memory_sector = ""
@@ -108,8 +109,11 @@ def build_biscuit(project_name, path=".", debug=False):
     pass
 
 
-def run_biscuit(biscuit, path=".", debug=False):
-    biscuit = biscuit+".biscuit"
+def run_biscuit(biscuit: str, path=".", debug=False):
+    if biscuit.endswith(".biscuit"):
+        biscuit = biscuit
+    else:
+        biscuit = biscuit+".biscuit"
     run(biscuit, debug=debug)
 
 
