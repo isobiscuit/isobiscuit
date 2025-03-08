@@ -1,7 +1,7 @@
 import colorama
 import time
 import socket
-
+import zipfile
 
 colorama.init()
 hardware_memory_addresses = [
@@ -17,7 +17,9 @@ hardware_memory_addresses = [
 ]
 
 class Engine:
-    def __init__(self, data_sector, code_sector, mem_sector, debug=False):
+    def __init__(self, data_sector, code_sector, mem_sector, zip, debug=False, ):
+        self.mode = "biscuit"
+        self.zip: zipfile.ZipFile = zip
         self.stack = []
         self.hardware = Hardware(debug)
         self.debug = debug
@@ -52,7 +54,11 @@ class Engine:
         except KeyError as e:
             print(f"[ERROR] Key Error: {e}")
             raise e
-
+        except KeyboardInterrupt:
+            return (self.zip)
+        except StopEngineInterrupt:
+            return (self.zip)
+        return (self.zip)
     def execute(self, op):
         opcode: str = op[0]
         if opcode in self.OPCODES:
@@ -113,7 +119,7 @@ class Engine:
         call = self.register[0x2f]
         if call == 0x00:
             arg1 = self.register[0x30]
-            exit(arg1)
+            self.exit()
         elif call == 0x01:
             hardware_memory = {}
             for i in hardware_memory_addresses:
@@ -166,7 +172,8 @@ class Engine:
 
 
 
-
+    def exit(self):
+        return
 
 
 
@@ -446,3 +453,5 @@ class Hardware:
                 
         
         
+class StopEngineInterrupt(Exception):
+    pass

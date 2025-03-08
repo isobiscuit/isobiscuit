@@ -56,7 +56,7 @@ def addFilesToBiscuit(biscuit_file, files: list[str]):
                 zipf.write(file)
     zip_data = zip_buf.getvalue()
     with open(f"{biscuit_file}.biscuit", "ab") as f:
-        f.write(binascii.unhexlify(zip_data.hex()))
+        f.write(zip_data)
 
     
 

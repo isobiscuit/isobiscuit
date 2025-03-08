@@ -3,3 +3,4 @@ test.*
 dist/*
 git-push.sh
 out.txt
+test
