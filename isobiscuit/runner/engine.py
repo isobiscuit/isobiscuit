@@ -427,8 +427,10 @@ class Hardware:
             elif action == 0x02: #send
                 message = self.hardware_memory[0xFFFF_0105]
                 sock: socket.socket = self.inet_connection[port]
-                
-                sock.send(bytes(message, encoding="utf8"))
+                if isinstance(message, bytes):
+                    sock.send(message)
+                else:
+                    sock.send(bytes(message, encoding="utf8"))
             elif action == 0x03: # recv
                 bufsize: int = self.hardware_memory[0xFFFF_0106]
                 sock = self.inet_connection[port]
