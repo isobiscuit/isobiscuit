@@ -20,10 +20,14 @@ def install(url: str, biscuit_name, path=".", force=False): # mylib#github:user/
     try:
         source = _[1]
     except IndexError:
-        (url_lib, url_require, lib) = from_biscuit_store(lib)
-        download_biasm(url_lib, lib, biscuit_name, path)
-        install_requirements(url_require, biscuit_name, path)
-        return
+        (urls_lib, urls_require, lib) = from_biscuit_store(lib)
+                
+        for url_lib in urls_lib:
+            download_biasm(url_lib, lib, biscuit_name, path)
+        for url_require in urls_require:
+            print(f"[INFO] Fetching requirements of `{url}`")
+            install_requirements(url_require, biscuit_name, path)
+            return
     _install(source, lib, biscuit_name, path, force)
 
 
@@ -43,12 +47,16 @@ def _install(source: str, lib: str, biscuit_name, path=".", force=False): # exam
         _ = _[1].split("/")
         user = _[0]
         repo = _[1]
-        (url_lib, url_require, lib) = from_github(user, repo, lib)
+        (urls_lib, urls_require, lib) = from_github(user, repo, lib)
     else:
         return
-    
-    download_biasm(url_lib, lib, biscuit_name, path)
-    install_requirements(url_require, biscuit_name, path)
+    for url_lib in urls_lib:
+        download_biasm(url_lib, lib, biscuit_name, path)
+    for url_require in urls_require:
+        print(f"[INFO] Fetching requirements of `{lib}#{source}`")
+        install_requirements(url_require, biscuit_name, path)
+
+
 
 def download_biasm(url, lib_name,biscuit_name: str, path="."):
     res = requests.get(url)
@@ -58,7 +66,7 @@ def download_biasm(url, lib_name,biscuit_name: str, path="."):
             f.close()
 
 def install_requirements(url, biscuit_name, path):
-    print(f"[INFO] Fetching requirements of `{url}`")
+    
     res = requests.get(url)
 
     if res.status_code == 200:
@@ -67,6 +75,8 @@ def install_requirements(url, biscuit_name, path):
         except ValueError:
             print(f"Can not install requirements {url}. You have to install it manuelly")
             return
+    if res.status_code == 404:
+        return
     if data["require"] != []:
         print(f"Requirements found: {", ".join(data["require"])}")
     else:
@@ -77,12 +87,17 @@ def install_requirements(url, biscuit_name, path):
 
 
 def from_biscuit_store(lib):
-    url_lib =       f"https://raw.githubusercontent.com/isobiscuit/store/master/lib_{lib}.biasm"
-    url_require =   f"https://raw.githubusercontent.com/isobiscuit/store/master/require_{lib}.json"
-    return (url_lib, url_require, lib)
-
+    return from_github("isobiscuit", "store", lib)
 
 def from_github(user, repo, lib):
-    url_lib =       f"https://raw.githubusercontent.com/{user}/{repo}/master/lib_{lib}.biasm"
-    url_require =   f"https://raw.githubusercontent.com/{user}/{repo}/master/require_{lib}.json"
-    return (url_lib, url_require, lib)
+    urls_lib = []
+    urls_require = []
+    urls_lib.append(f"https://raw.githubusercontent.com/{user}/{repo}/master/pkgs/{lib}/lib.biasm")
+    urls_require.append(f"https://raw.githubusercontent.com/{user}/{repo}/master/pkgs/{lib}/require.json")
+    
+    urls_lib.append(f"https://raw.githubusercontent.com/{user}/{repo}/master/pkgs/lib_{lib}.biasm")
+    urls_require.append(f"https://raw.githubusercontent.com/{user}/{repo}/master/pkgs/require_{lib}.json")
+    
+    urls_lib.append(f"https://raw.githubusercontent.com/{user}/{repo}/master/lib_{lib}.biasm")
+    urls_require.append(f"https://raw.githubusercontent.com/{user}/{repo}/master/require_{lib}.json")
+    return (urls_lib, urls_require, lib)
