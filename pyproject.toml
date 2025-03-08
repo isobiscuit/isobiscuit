@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isobiscuit"
-version = "0.2.3"
+version = "0.2.4"
 description = "IsoBiscuit is a tool for virtualize an isolate processes"
 authors = ["trollmii <trollmii@outlook.de>"]
 readme = "README.md"

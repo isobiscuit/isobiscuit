@@ -5,7 +5,15 @@ import socket
 
 colorama.init()
 hardware_memory_addresses = [
-    0xFFFF0000
+    0xFFFF0000,
+    0xFFFF0100,
+    0xFFFF0101,
+    0xFFFF0102,
+    0xFFFF0103,
+    0xFFFF0104,
+    0xFFFF0105,
+    0xFFFF0106,
+    0xFFFF0107,
 ]
 
 class Engine:
