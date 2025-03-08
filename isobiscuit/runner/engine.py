@@ -36,6 +36,8 @@ class Engine:
             '48': self.mov, '49': self.interrupt, '4a': self.change_mode,
             '4b': self.call, '4c': self.ret
         }
+        for i in hardware_memory_addresses:
+            self.memory[i] = None
 
     def run(self):
         try:
