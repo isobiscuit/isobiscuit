@@ -108,6 +108,23 @@ def build_biscuit(project_name: str, path=".", debug=False):
 
     pass
 
+from .runner.reader import read
+import binascii
+import io
+def extract_zip(biscuit: str, path="."):
+    if biscuit.endswith(".biscuit"):
+        biscuit = biscuit
+    else:
+        biscuit = biscuit+".biscuit"
+    (data_sector, code_sector, mem_sector, other_sector, zip) = read(f"{path}/{biscuit}")
+    zip = binascii.unhexlify(zip)
+    chunk_size = 1024
+    stream = io.BytesIO(zip)
+
+    with open(f'{biscuit[:-8]}.zip', 'wb') as f:
+        while (chunk := stream.read(chunk_size)):
+            f.write(chunk)
+
 
 def run_biscuit(biscuit: str, path=".", debug=False):
     if biscuit.endswith(".biscuit"):
@@ -133,5 +150,7 @@ def main():
         run_biscuit(biscuit, debug=debug)
     if action == "install":
         install_lib(biscuit, args[0])
+    if action == "extract":
+        extract_zip(biscuit)
 if __name__ == "__main__":
     main()
