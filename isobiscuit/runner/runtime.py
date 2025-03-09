@@ -12,7 +12,7 @@ def hex_to_zipfile(zip):
 def mount_zip_vfs(hex_string):
     zip_file = hex_to_zipfile(hex_string)  # Hex -> ZIP (In-Memory)
     
-    return zipfile.ZipFile(zip_file, "r", zipfile.ZIP_DEFLATED)
+    return zip_file
         
 def parse_biscuit(data_sector, code_sector, mem_sector, other_sector):
     data_sector = parse_data_sector(data_sector)
@@ -29,13 +29,13 @@ def start_biscuit(biscuit_file, _data_sector, _code_sector, _mem_sector, _other_
         (zip) = engine.run()
     except KeyboardInterrupt:
         print("\n[INFO] Stopping Biscuit")
-    if zip != _zip:
-        save_biscuit(biscuit_file, _data_sector, _code_sector, _mem_sector, _other_sector, zip)
-
-def save_biscuit(biscuit_file, data_sector, code_sector, mem_sector, other_sector, zip: zipfile.ZipFile,):
-    zip = zip
+    
+    save_biscuit(biscuit_file, _data_sector, _code_sector, _mem_sector, _other_sector, zip)
+    _zip.close()
+    zip.close()
+def save_biscuit(biscuit_file, data_sector, code_sector, mem_sector, other_sector, _zip: io.BytesIO):
+    zip = zipfile.ZipFile(_zip, "r", compression=zipfile.ZIP_DEFLATED)
     new_zip_bytes = io.BytesIO()
-    print(biscuit_file)
     with zipfile.ZipFile(new_zip_bytes, 'w', zipfile.ZIP_DEFLATED) as new_zip_file:
         for file_name in zip.namelist():
             file_data = zip.read(file_name)

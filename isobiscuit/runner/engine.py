@@ -2,7 +2,7 @@ import colorama
 import time
 import socket
 import zipfile
-
+import io
 colorama.init()
 hardware_memory_addresses = [
     0xFFFF0000,
@@ -17,9 +17,9 @@ hardware_memory_addresses = [
 ]
 
 class Engine:
-    def __init__(self, data_sector, code_sector, mem_sector, zip, debug=False, ):
+    def __init__(self, data_sector, code_sector, mem_sector, zip: io.BytesIO, debug=False, ):
         self.mode = "biscuit"
-        self.zip: zipfile.ZipFile = zip
+        self.zip: io.BytesIO = zip
         self.stack = []
         self.hardware = Hardware(debug)
         self.debug = debug
@@ -171,14 +171,18 @@ class Engine:
 
 
     def fs_read_file(self, file):
-        self.register[0x2f] =  self.zip.read(file)
+        with zipfile.ZipFile(self.zip, "r", compression=zipfile.ZIP_DEFLATED) as zip:
+            self.register[0x2f] =  zip.read(file)
     def fs_write_file(self, file, text):
-        self.zip.write(file, text)
+        with zipfile.ZipFile(self.zip, "a", compression=zipfile.ZIP_DEFLATED) as zip:
+            zip.writestr(file, text)
+            
     def fs_exists_file(self, file):
-        if file in self.zip.namelist():
-            self.register[0x2f] = 1
-        else:
-            self.register[0x2f] = 0
+        with zipfile.ZipFile(self.zip, "r", compression=zipfile.ZIP_DEFLATED) as zip:
+            if file in zip.namelist():
+                self.register[0x2f] = 1
+            else:
+                self.register[0x2f] = 0
 
 
 
@@ -187,7 +191,7 @@ class Engine:
 
 
     def exit(self):
-        return
+        raise StopEngineInterrupt
 
 
 
