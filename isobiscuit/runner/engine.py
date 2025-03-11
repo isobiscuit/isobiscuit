@@ -3,6 +3,12 @@ import time
 import socket
 import zipfile
 import io
+import copy
+import threading
+import random
+
+
+
 colorama.init()
 hardware_memory_addresses = [
     0xFFFF0000,
@@ -39,6 +45,7 @@ class Engine:
             '48': self.mov, '49': self.interrupt, '4a': self.change_mode,
             '4b': self.call, '4c': self.ret
         }
+        self.threads = dict[bytes, threading.Thread]()
         for i in hardware_memory_addresses:
             self.memory[i] = None
 
@@ -157,7 +164,13 @@ class Engine:
         elif call == 0x07:
             arg1 = self.register[0x30]
             self.fs_read_file(arg1)
-
+        elif call == 0x08:
+            self.flags['ZF'] = 1
+            engine = copy.copy(self)
+            self.threads[id] = threading.Thread(target=engine.run).run()
+            self.flags['ZF'] = 0
+            
+            
 
     def syscall(self):
         #syscall = self.register[0x2f]
