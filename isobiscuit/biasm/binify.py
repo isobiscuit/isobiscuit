@@ -286,7 +286,7 @@ def binify(files: list[str], debug=False):
     if debug:
         print("code sektor")
         print(codes)
-        print("data sektore")
+        print("data sektor")
         print(data)
     return (codes, data, counter)    
 

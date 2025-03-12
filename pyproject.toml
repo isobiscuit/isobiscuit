@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isobiscuit"
-version = "0.3.6"
+version = "0.3.7"
 description = "IsoBiscuit is a tool for virtualize an isolate processes"
 authors = ["trollmii <trollmii@outlook.de>"]
 readme = "README.md"
@@ -8,8 +8,6 @@ license = "LICENSE.txt"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-grpcio = "1.67.0"
-grpcio-tools = "1.67.0"
 pyyaml = "^6.0.2"
 requests = "^2.0.0"
 colorama = "^0.4.6"
