@@ -17,6 +17,7 @@ You can make a Biscuit Call with `int 0x45`
 |0x06|BISC_WRITE_FILE|Write in a file (ebx), the text is (ecx)|
 |0x07|BISC_READ_FILE|Read a file (ebx)|
 |0x08|BISC_SPLIT|Split the engine in two threads, the new thread has the flag ZF=1, so you can use ´je´ to jump to an address that is only for the new thread| 
+|0x09|BISC_STR_CHAR_BY_INDEX|Get an character from a string (eax) at index (ebx) and put result to eax 
 ## Hardware Addresses
 |Hardware Address|Name|Description|
 |--------|-------------|-----------------------------------------------|

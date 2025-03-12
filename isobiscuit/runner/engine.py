@@ -170,7 +170,12 @@ class Engine:
             threading.Thread(target=engine.run).start()
             self.flags['ZF'] = 0
             
+        elif call == 0x09: # Get char from string (ecx) by index (ebx)
+            arg1 = self.register[0x30] # Index
+            arg2 = self.register[0x31] # String
             
+            result = arg2[arg1]
+            self.register[0x2f] = result
 
     def syscall(self):
         #syscall = self.register[0x2f]
