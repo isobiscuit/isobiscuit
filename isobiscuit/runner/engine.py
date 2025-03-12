@@ -166,8 +166,8 @@ class Engine:
             self.fs_read_file(arg1)
         elif call == 0x08:
             self.flags['ZF'] = 1
-            engine = copy.copy(self)
-            self.threads[id] = threading.Thread(target=engine.run).run()
+            engine = copy.deepcopy(self)
+            threading.Thread(target=engine.run).start()
             self.flags['ZF'] = 0
             
             
