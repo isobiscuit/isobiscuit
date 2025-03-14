@@ -1,3 +1,6 @@
 [submodule "examples"]
 	path = examples
 	url = https://github.com/isobiscuit/examples
+[submodule "store"]
+	path = store
+	url = https://github.com/isobiscuit/store
