@@ -77,6 +77,37 @@ def parse(files: list[str], debug=False):
             cmds.append(["push", line[1]])
         elif line[0] == "pop":
             cmds.append(["pop", line[1]])
+        elif line[0] == "swap":
+            cmds.append(["swap"])
+        elif line[0] == "dup":
+            cmds.append(["dup"])
+        elif line[0] == "drop":
+            cmds.append(["drop"])
+        elif line[0] == "halt":
+            cmds.append(["halt"])
+        elif line[0] == "rand":
+            cmds.append(["rand", line[1], line[2]])
+        elif line[0] == "inc":
+            cmds.append(["inc", line[1]])
+        elif line[0] == "dec":
+            cmds.append(["dec", line[1]])
+        elif line[0] == "abs":
+            cmds.append(["abs", line[1]])
+        elif line[0] == "neg":
+            cmds.append(["neg", line[1]])
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
         elif line[0].startswith("0x"):
             cmds.append([line[0]])
         elif line[0].endswith("h"):
@@ -247,6 +278,38 @@ def binify(files: list[str], debug=False):
             codes[counter] = [OPCODES["push"], REGISTERS[cmd[1]]]
         if cmd[0] == "pop":
             codes[counter] = [OPCODES["pop"], REGISTERS[cmd[1]]]
+        if cmd[0] == "swap":
+            codes[counter] = [OPCODES["swap"], REGISTERS[cmd[1]], REGISTERS[cmd[2]]]
+        if cmd[0] == "dup":
+            codes[counter] = [OPCODES["dup"]]
+        if cmd[0] == "drop":
+            codes[counter] = [OPCODES["drop"]]
+        if cmd[0] == "halt":
+            codes[counter] = [OPCODES["halt"]]
+        if cmd[0] == "rand":
+            codes[counter] = [OPCODES["rand"], REGISTERS[cmd[1]], cmd[2]]
+        if cmd[0] == "inc":
+            codes[counter] = [OPCODES["inc"], REGISTERS[cmd[1]]]
+        if cmd[0] == "dec":
+            codes[counter] = [OPCODES["dec"], REGISTERS[cmd[1]]]
+        if cmd[0] == "abs":
+            codes[counter] = [OPCODES["abs"], REGISTERS[cmd[1]]]
+        if cmd[0] == "neg":
+            codes[counter] = [OPCODES["neg"], REGISTERS[cmd[1]]]
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
         if cmd[0] in add_later_ops:
             codes[counter] = []
             add_later.append([counter, cmd])

@@ -73,6 +73,15 @@ OPCODES = {
     "ret": 0x4c,
     "push": 0x4d,
     "pop": 0x4e,
+    "swap": 0x4f,
+    "dup": 0x50,
+    "drop": 0x51,
+    "halt": 0x52,
+    "rand": 0x53,
+    "inc": 0x54,
+    "dec": 0x55,
+    "abs": 0x56,
+    "neg": 0x57,
         
 }
 
