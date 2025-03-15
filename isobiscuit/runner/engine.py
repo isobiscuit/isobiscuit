@@ -46,7 +46,10 @@ class Engine:
             '40': self.load, '41': self.store, '42': self.cmp, '43': self.jmp,
             '44': self.je, '45': self.jne, '46': self.jg, '47': self.jl,
             '48': self.mov, '49': self.interrupt, '4a': self.change_mode,
-            '4b': self.call, '4c': self.ret, '4d': self.push, '4e': self.pop
+            '4b': self.call, '4c': self.ret, '4d': self.push, '4e': self.pop,
+            '4f': self.swap, '50': self.dup, '51': self.drop, '52': self.halt,
+            '53': self.rand, '54': self.inc, '55': self.dec, '56': self.abs,
+            '57': self.neg,
         }
         self.stop_event = threading.Event()
         for i in hardware_memory_addresses:
@@ -106,6 +109,30 @@ class Engine:
 
     def mov(self, op): self.register[op[1]] = self.register[op[2]]
 
+
+    def swap(self, op):
+        r1 = self.register[op[1]]
+        r2 = self.register[op[2]]
+        self.register[op[2]] = r1
+        self.register[op[1]] = r2
+    def dup(self, op):
+        s = self.stack[-1]
+        self.stack.append(s)
+    def drop(self, op):
+        self.stack.pop()
+    def halt(self, op):
+        self.kill()
+    def rand(self, op):
+        num = random.randint(0, op[2])
+        self.register[op[1]] = num
+    def inc(self, op):
+        self.register[op[1]]+=1
+    def dec(self, op):
+        self.register[op[1]]-=1
+    def abs(self, op):
+        self.register[op[1]] = abs(self.register[op[2]])
+    def neg(self, op):
+        self.register[op[1]] = -self.register[op[1]]
     
     def change_mode(self, op):
         mode = op[1]
