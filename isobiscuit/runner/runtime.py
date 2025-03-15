@@ -22,9 +22,7 @@ def parse_biscuit(data_sector, code_sector, mem_sector, other_sector):
 def start_biscuit(biscuit_file, _data_sector, _code_sector, _mem_sector, _other_sector, _zip, debug=False):
     _zip = mount_zip_vfs(_zip)
     (data_sector, code_sector, mem_sector, other_sector) = parse_biscuit(_data_sector, _code_sector, _mem_sector, _other_sector)
-    print("[INFO] Starting engine...")
     engine = Engine(data_sector, code_sector, {0: ""}, _zip, debug,)
-    print("[INFO] Booting biscuit...")
     try:
         (zip) = engine.run()
     except KeyboardInterrupt:

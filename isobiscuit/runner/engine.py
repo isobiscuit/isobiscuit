@@ -22,6 +22,9 @@ hardware_memory_addresses = [
     0xFFFF0107,
 ]
 
+
+engine_lock_fs = threading.Lock()
+
 class Engine:
     def __init__(self, data_sector, code_sector, mem_sector, zip: io.BytesIO, debug=False, ):
         self.mode = "biscuit"
@@ -30,7 +33,7 @@ class Engine:
         self.hardware = Hardware(debug)
         self.debug = debug
         self.register = {i: 0 for i in range(0x10, 0x3C)}
-        self.memory = {**data_sector, **code_sector}
+        self.memory = {**mem_sector,**data_sector, **code_sector}
         self.flags = {'ZF': 0, 'CF': 0, 'SF': 0, 'OF': 0}
         self.pc = 0
         self.code_addresses = list(code_sector.keys())
@@ -45,13 +48,17 @@ class Engine:
             '48': self.mov, '49': self.interrupt, '4a': self.change_mode,
             '4b': self.call, '4c': self.ret
         }
-        self.threads = dict[bytes, threading.Thread]()
+        self.stop_event = threading.Event()
+        self.data_sector = data_sector
+        self.code_sector = code_sector
+        self.threads = dict[str, Engine]()
         for i in hardware_memory_addresses:
             self.memory[i] = None
-
+    def kill(self):
+        self.stop_event.set()
     def run(self):
         try:
-            while self.pc < self.code_len:
+            while self.pc < self.code_len and self.stop_event.is_set():
                 address = self.code_addresses[self.pc]
                 op = self.memory[address]
                 if self.debug:
@@ -165,18 +172,21 @@ class Engine:
             arg1 = self.register[0x30]
             self.fs_read_file(arg1)
         elif call == 0x08:
-            self.flags['ZF'] = 1
-            engine = copy.deepcopy(self)
+            engine = Engine(data_sector={}, code_sector={}, memory_sector={}, zip=self.zip, debug=self.debug)
+            engine.pc = self.pc
+            engine.flags['ZF'] = 1
+            engine.ret_pcs = self.ret_pcs
+            engine.hardware = self.hardware
+            engine.memory = self.memory
             threading.Thread(target=engine.run).start()
             self.flags['ZF'] = 0
             
         elif call == 0x09: # Get char from string (ecx) by index (ebx)
-            arg1 = self.register[0x30] # Index
-            arg2 = self.register[0x31] # String
+            arg1 :int = self.register[0x30] # Index
+            arg2 :str = self.register[0x31] # String
+             
+            self.register[0x2f] = arg2[arg1]
             
-            result = arg2[arg1]
-            self.register[0x2f] = result
-
     def syscall(self):
         #syscall = self.register[0x2f]
         print("[INFO] Syscalls are in developing")
@@ -189,18 +199,21 @@ class Engine:
 
 
     def fs_read_file(self, file):
-        with zipfile.ZipFile(self.zip, "r", compression=zipfile.ZIP_DEFLATED) as zip:
-            self.register[0x2f] =  zip.read(file)
+        with engine_lock_fs:
+            with zipfile.ZipFile(self.zip, "r", compression=zipfile.ZIP_DEFLATED) as zip:
+                self.register[0x2f] =  zip.read(file)
     def fs_write_file(self, file, text):
-        with zipfile.ZipFile(self.zip, "a", compression=zipfile.ZIP_DEFLATED) as zip:
-            zip.writestr(file, text)
+        with engine_lock_fs:
+            with zipfile.ZipFile(self.zip, "a", compression=zipfile.ZIP_DEFLATED) as zip:
+                zip.writestr(file, text)
             
     def fs_exists_file(self, file):
-        with zipfile.ZipFile(self.zip, "r", compression=zipfile.ZIP_DEFLATED) as zip:
-            if file in zip.namelist():
-                self.register[0x2f] = 1
-            else:
-                self.register[0x2f] = 0
+        with engine_lock_fs:
+            with zipfile.ZipFile(self.zip, "r", compression=zipfile.ZIP_DEFLATED) as zip:
+                if file in zip.namelist():
+                    self.register[0x2f] = 1
+                else:
+                    self.register[0x2f] = 0
 
 
 
@@ -327,23 +340,26 @@ class Engine:
             self.flags['ZF'] = 1
         else:
             self.flags['ZF'] = 0
-        
-        if result < 0:
-            self.flags['SF'] = 1
-        else:
-            self.flags['SF'] = 0
-        
-        if self.register[r1] < self.register[r2]:
-            self.flags['CF'] = 1
-        else:
-            self.flags['CF'] = 0
-        
-        
-        if ((self.register[r1] < 0 and self.register[r2] > 0 and result > 0) or
-            (self.register[r1] > 0 and self.register[r2] < 0 and result < 0)):
-            self.flags['OF'] = 1
-        else:
-            self.flags['OF'] = 0
+        try:
+            if result < 0:
+                self.flags['SF'] = 1
+            else:
+                self.flags['SF'] = 0
+            
+            if self.register[r1] < self.register[r2]:
+                self.flags['CF'] = 1
+            else:
+                self.flags['CF'] = 0
+            
+            
+            if ((self.register[r1] < 0 and self.register[r2] > 0 and result > 0) or
+                (self.register[r1] > 0 and self.register[r2] < 0 and result < 0)):
+                self.flags['OF'] = 1
+            else:
+                self.flags['OF'] = 0
+        except Exception as e:
+            if self.debug:
+                print(e)
 
 
     def update_register(self, register: int, value):
