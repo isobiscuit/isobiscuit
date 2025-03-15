@@ -73,6 +73,10 @@ def parse(files: list[str], debug=False):
             cmds.append(["call", line[1]])
         elif line[0] == "ret":
             cmds.append(["ret"])
+        elif line[0] == "push":
+            cmds.append(["push", line[1]])
+        elif line[0] == "pop":
+            cmds.append(["pop", line[1]])
         elif line[0].startswith("0x"):
             cmds.append([line[0]])
         elif line[0].endswith("h"):
@@ -117,10 +121,6 @@ def parse(files: list[str], debug=False):
             cmds.append(["shl", line[1], line[2]])
         elif line[0] == "shr":
             cmds.append(["shr", line[1], line[2]])
-        elif line[0] == "push":
-            cmds.append(["push", line[1]])
-        elif line[0] == "pop":
-            cmds.append(["pop", line[1]])
         
 
 

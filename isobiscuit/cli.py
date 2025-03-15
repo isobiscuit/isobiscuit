@@ -16,12 +16,9 @@ def init_biscuit(name, path="."):
     BISCUIT_STRUCTURE = {
         "dirs": [
             "code",
-            "code/lib", 
-            "build", 
-            "build/debug",
+            "code/lib",
             #"tests", 
             "docs", 
-            "scripts", 
             "config",
             "bin",
             "fs",
@@ -29,19 +26,11 @@ def init_biscuit(name, path="."):
         "files": {
             "biscuit.yaml": {
                 "name": name,
-                "version": "0.1.0",
-                "entrypoint": "code/main.biasm"
             },
             "code/main.biasm": "; Main.biasm",
             #"tests/test1.btest": "",
             "docs/README.md": f"# {name}",
-            "scripts/build.sh": "#!/bin/bash\necho 'Building Biscuit...'\n",
-            "scripts/run.sh": "#!/bin/bash\necho 'Running Biscuit...'\n",
-            "scripts/clean.sh": "#!/bin/bash\necho 'Cleaning build...'\n",
-            "config/env.json": "{}",
-            "config/settings.yaml": {
-                "memory_size": "16MB"
-            }
+            
         }
     }
 
