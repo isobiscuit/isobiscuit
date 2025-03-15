@@ -46,7 +46,7 @@ class Engine:
             '40': self.load, '41': self.store, '42': self.cmp, '43': self.jmp,
             '44': self.je, '45': self.jne, '46': self.jg, '47': self.jl,
             '48': self.mov, '49': self.interrupt, '4a': self.change_mode,
-            '4b': self.call, '4c': self.ret
+            '4b': self.call, '4c': self.ret, '4d': self.push, '4e': self.pop
         }
         self.stop_event = threading.Event()
         self.data_sector = data_sector
@@ -319,7 +319,12 @@ class Engine:
         pc = self.ret_pcs.pop()
         self.pc = pc
 
-
+    def push(self, op):
+        r = self.register[op[1]]
+        self.stack.append(r)
+    def pop(self, op):
+        s = self.stack.pop()
+        self.register[op[1]] = s
 
 
 

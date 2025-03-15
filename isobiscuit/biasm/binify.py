@@ -117,6 +117,10 @@ def parse(files: list[str], debug=False):
             cmds.append(["shl", line[1], line[2]])
         elif line[0] == "shr":
             cmds.append(["shr", line[1], line[2]])
+        elif line[0] == "push":
+            cmds.append(["push", line[1]])
+        elif line[0] == "pop":
+            cmds.append(["pop", line[1]])
         
 
 
@@ -239,8 +243,10 @@ def binify(files: list[str], debug=False):
         if cmd[0] == "shr":
             codes[counter] = [OPCODES["shr"], REGISTERS[cmd[1]], cmd[2]]
         
-
-        
+        if cmd[0] == "push":
+            codes[counter] = [OPCODES["push"], REGISTERS[cmd[1]]]
+        if cmd[0] == "pop":
+            codes[counter] = [OPCODES["pop"], REGISTERS[cmd[1]]]
         if cmd[0] in add_later_ops:
             codes[counter] = []
             add_later.append([counter, cmd])

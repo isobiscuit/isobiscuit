@@ -70,7 +70,9 @@ OPCODES = {
     "int": 0x49,
     "mode": 0x4a,
     "call": 0x4b,
-    "ret": 0x4c
+    "ret": 0x4c,
+    "push": 0x4d,
+    "pop": 0x4e,
         
 }
 

@@ -42,7 +42,8 @@ BiASM is similar to normal assembly but has a few differences:
 |mode|MODE|change mode of biscuit|
 |call|Address|Call the address and jump back with ret|
 |ret|Nothing|Return|
-
+|push|Register|Push value from Register into the stack
+|pop|Register|Pop value from stack into Register
 ## Registers
 
 
