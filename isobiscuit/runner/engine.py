@@ -49,16 +49,13 @@ class Engine:
             '4b': self.call, '4c': self.ret, '4d': self.push, '4e': self.pop
         }
         self.stop_event = threading.Event()
-        self.data_sector = data_sector
-        self.code_sector = code_sector
-        self.threads = dict[str, Engine]()
         for i in hardware_memory_addresses:
             self.memory[i] = None
     def kill(self):
         self.stop_event.set()
     def run(self):
         try:
-            while self.pc < self.code_len and self.stop_event.is_set():
+            while self.pc < self.code_len and not self.stop_event.is_set():
                 address = self.code_addresses[self.pc]
                 op = self.memory[address]
                 if self.debug:
