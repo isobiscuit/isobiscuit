@@ -44,6 +44,14 @@ BiASM is similar to normal assembly but has a few differences:
 |ret|Nothing|Return|
 |push|Register|Push value from Register into the stack
 |pop|Register|Pop value from stack into Register
+|swap|Register1, Register2
+|dup|Nothing
+|halt|Nothing
+|rand|Register, Int
+|inc|Register
+|dec|Register
+|abs|Register
+|neg|Register
 ## Registers
 
 
