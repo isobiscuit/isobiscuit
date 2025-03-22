@@ -1,0 +1,25 @@
+name: Protect License File
+
+on:
+  push:
+    paths:
+      - 'LICENSE*'
+  pull_request:
+    paths:
+      - 'LICENSE*'
+
+jobs:
+  check-license:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Check if LICENSE was modified
+        run: |
+          if git diff --name-only $GITHUB_SHA^..$GITHUB_SHA | grep -q 'LICENSE'; then
+            echo "LICENSE file should not be changed!"
+            echo "To protect the open source of our project, the license is unchangeable even for the creator of IsoBiscuit"
+            exit 1
+          fi
