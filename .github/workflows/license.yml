@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'LICENSE*'
   pull_request:
     branches:
       - master
-    paths:
-      - 'LICENSE*'
 
 jobs:
   check-license:
