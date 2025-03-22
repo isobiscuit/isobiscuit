@@ -22,8 +22,7 @@ jobs:
 
       - name: Check if LICENSE was modified
         run: |
-          # Überprüfen, ob 'LICENSE' geändert wurde
-          if git diff --name-only origin/main...HEAD | grep -q 'LICENSE'; then
+          if git diff --name-only origin/master...HEAD | grep -q 'LICENSE'; then
             echo "LICENSE file should not be changed!"
             echo "To protect the open source of our project, the license is unchangeable even for the creator of IsoBiscuit"
             exit 1
