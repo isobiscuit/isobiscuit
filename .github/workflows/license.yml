@@ -8,6 +8,7 @@ on:
     branches:
       - master
 
+
 jobs:
   check-license:
     runs-on: ubuntu-latest
@@ -16,9 +17,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Fetch all history for checking the diff
+        run: git fetch --unshallow
+
       - name: Check if LICENSE was modified
         run: |
-          if git diff --name-only $GITHUB_SHA^..$GITHUB_SHA | grep -q 'LICENSE'; then
+          # Überprüfen, ob 'LICENSE' geändert wurde
+          if git diff --name-only origin/main...HEAD | grep -q 'LICENSE'; then
             echo "LICENSE file should not be changed!"
             echo "To protect the open source of our project, the license is unchangeable even for the creator of IsoBiscuit"
             exit 1
