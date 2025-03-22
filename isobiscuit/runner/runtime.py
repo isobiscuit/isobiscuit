@@ -2,8 +2,10 @@ import binascii
 import io
 import os
 import zipfile
+import warnings
 from .parser import parse_data_sector, parse_code_sector
-from .engine import Engine
+
+from isobiscuit_engine import Engine
 from ..compiler.build import writeSectors
 def hex_to_zipfile(zip):
     zip_bytes = binascii.unhexlify(zip)
@@ -22,6 +24,7 @@ def parse_biscuit(data_sector, code_sector, mem_sector, other_sector):
 def start_biscuit(biscuit_file, _data_sector, _code_sector, _mem_sector, _other_sector, _zip, debug=False):
     _zip = mount_zip_vfs(_zip)
     (data_sector, code_sector, mem_sector, other_sector) = parse_biscuit(_data_sector, _code_sector, _mem_sector, _other_sector)
+    
     engine = Engine(data_sector, code_sector, {0: ""}, _zip, debug,)
     try:
         (zip) = engine.run()

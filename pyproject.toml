@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "isobiscuit"
-version = "0.3.13"
+version = "0.3.14-dev"
 description = "IsoBiscuit is a tool for virtualize an isolate processes"
 authors = ["trollmii <trollmii@outlook.de>"]
 readme = "README.md"
@@ -11,6 +11,7 @@ python = "^3.12"
 pyyaml = "^6.0.2"
 requests = "^2.0.0"
 colorama = "^0.4.6"
+isobiscuit-engine = "^0.1.15"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
