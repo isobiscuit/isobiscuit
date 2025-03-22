@@ -3,7 +3,7 @@ name: Check for critical file changes and request reviewer
 on:
   pull_request:
     branches:
-      - main  # Du kannst auch andere Branches angeben
+      - main
 
 jobs:
   check_file_changes:
