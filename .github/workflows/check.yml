@@ -1,0 +1,60 @@
+name: Check for critical file changes and request reviewer
+
+on:
+  pull_request:
+    branches:
+      - main  # Du kannst auch andere Branches angeben
+
+jobs:
+  check_file_changes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Check if LICENSE file is modified
+        id: check_license
+        run: |
+          if git diff --exit-code --quiet -- LICENSE; then
+            echo "LICENSE file is unchanged."
+            echo "::set-output name=file_changed::false"
+          else
+            echo "LICENSE file has been modified."
+            echo "::set-output name=file_changed::true"
+          fi
+
+      - name: Check if CONTRIBUTING.md file is modified
+        id: check_contributing
+        run: |
+          if git diff --exit-code --quiet -- CONTRIBUTING.md; then
+            echo "CONTRIBUTING.md file is unchanged."
+            echo "::set-output name=file_changed::false"
+          else
+            echo "CONTRIBUTING.md file has been modified."
+            echo "::set-output name=file_changed::true"
+          fi
+
+      - name: Check if CODE_OF_CONDUCT.md file is modified
+        id: check_coc
+        run: |
+          if git diff --exit-code --quiet -- CODE_OF_CONDUCT.md; then
+            echo "CODE_OF_CONDUCT.md file is unchanged."
+            echo "::set-output name=file_changed::false"
+          else
+            echo "CODE_OF_CONDUCT.md file has been modified."
+            echo "::set-output name=file_changed::true"
+          fi
+
+  request_reviewer:
+    needs: check_file_changes
+    if: ${{ needs.check_license.outputs.file_changed == 'false' || needs.check_contributing.outputs.file_changed == 'false' || needs.check_coc.outputs.file_changed == 'false' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Request a reviewer for the pull request
+        uses: peter-evans/request-pull-request-review@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ github.event.pull_request.number }}
+          reviewers: 'TrollMii'
