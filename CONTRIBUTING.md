@@ -1,6 +1,6 @@
 # Contributing to ProjectName
 
-Thank you for considering contributing to ProjectName! We welcome contributions and appreciate your time and effort. To make the process smooth and efficient for everyone, please follow these guidelines.
+Thank you for considering contributing to IsoBiscuit! We welcome contributions and appreciate your time and effort. To make the process smooth and efficient for everyone, please follow these guidelines.
 
 ## How to Contribute
 
